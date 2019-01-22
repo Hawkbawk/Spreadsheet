@@ -50,7 +50,8 @@ namespace Formulas
         /// </summary>
         public double Evaluate(Lookup lookup)
         {
-            return 0;
+            return 1;
+            //This is for testing merging!
         }
 
         /// <summary>
