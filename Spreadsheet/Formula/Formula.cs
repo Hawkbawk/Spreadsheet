@@ -8,33 +8,25 @@ using static Formulas.TokenType;
 namespace Formulas
 {
     /// <summary>
-    /// Represents formulas written in standard infix notation using standard precedence
-    /// rules.  Provides a means to evaluate Formulas.  Formulas can be composed of
-    /// non-negative floating-point numbers, variables, left and right parentheses, and
-    /// the four binary operator symbols +, -, *, and /.  (The unary operators + and -
-    /// are not allowed.)
+    /// Represents formulas written in standard infix notation using standard
+    /// precedence rules.  Provides a means to evaluate Formulas.  Formulas can
+    /// be composed of non-negative floating-point numbers, variables, left and
+    /// right parentheses, and the four binary operator symbols +, -, *, and /. 
+    /// (The unary operators + and - are not allowed.)
     /// </summary>
     public class Formula
     {
         /// <summary>
-        /// Creates a Formula from a string that consists of a standard infix expression composed
-        /// from non-negative floating-point numbers (using C#-like syntax for double/int literals), 
-        /// variable symbols (a letter followed by zero or more letters and/or digits), left and right
-        /// parentheses, and the four binary operator symbols +, -, *, and /.  White space is
-        /// permitted between tokens, but is not required.
-        /// 
-        /// Examples of a valid parameter to this constructor are:
-        ///     "2.5e9 + x5 / 17"
-        ///     "(5 * 2) + 8"
-        ///     "x*y-2+35/9"
-        ///     
-        /// Examples of invalid parameters are:
-        ///     "_"
-        ///     "-5.3"
-        ///     "2 5 + 3"
-        /// 
-        /// If the formula is syntacticaly invalid, throws a FormulaFormatException with an 
-        /// explanatory Message.
+        /// Creates a Formula from a string that consists of a standard infix
+        /// expression composed from non-negative floating-point numbers (using
+        /// C#-like syntax for double/int literals), variable symbols (a letter
+        /// followed by zero or more letters and/or digits), left and right
+        /// parentheses, and the four binary operator symbols +, -, *, and /. 
+        /// White space is permitted between tokens, but is not required.
+        /// Examples of a valid parameter to this constructor are: "2.5e9 + x5 /
+        /// 17" "(5 * 2) + 8" "x*y-2+35/9" Examples of invalid parameters are:
+        /// "_" "-5.3" "2 5 + 3" If the formula is syntacticaly invalid, throws
+        /// a FormulaFormatException with an explanatory Message.
         /// </summary>
 
         private IEnumerable<Tuple<string, TokenType>> storedFormula;
@@ -44,31 +36,32 @@ namespace Formulas
             storedFormula = GetTokens(formula);
         }
         /// <summary>
-        /// Evaluates this Formula, using the Lookup delegate to determine the values of variables.  (The
-        /// delegate takes a variable name as a parameter and returns its value (if it has one) or throws
-        /// an UndefinedVariableException (otherwise).  Uses the standard precedence rules when doing the evaluation.
-        /// 
-        /// If no undefined variables or divisions by zero are encountered when evaluating 
-        /// this Formula, its value is returned.  Otherwise, throws a FormulaEvaluationException  
-        /// with an explanatory Message.
+        /// Evaluates this Formula, using the Lookup delegate to determine the
+        /// values of variables.  (The delegate takes a variable name as a
+        /// parameter and returns its value (if it has one) or throws an
+        /// UndefinedVariableException (otherwise).  Uses the standard
+        /// precedence rules when doing the evaluation. If no undefined
+        /// variables or divisions by zero are encountered when evaluating this
+        /// Formula, its value is returned.  Otherwise, throws a
+        /// FormulaEvaluationException with an explanatory Message.
         /// </summary>
         public double Evaluate(Lookup lookup)
         {
             Stack<double> values = new Stack<double>();
             Stack<string> operators = new Stack<string>();
-            foreach (Tuple<string, TokenType> tup in storedFormula)
+            foreach (Tuple<string, TokenType> token in storedFormula)
             {
-                TokenType t = tup.Item2;
-                switch (t)
+                TokenType tokenType = token.Item2;
+                switch (tokenType)
                 {
                     case Number:
-                        NumberEncountered(values, operators, tup);
+                        NumberEncountered(values, operators, token);
                         break;
                     case Var:
-                        VarEncountered(values, operators, tup, lookup);
+                        VarEncountered(values, operators, token, lookup);
                         break;
                     case Oper:
-                        OperEncountered(values, operators, tup);
+                        OperEncountered(values, operators, token);
                         break;
                 }
             }
@@ -76,43 +69,130 @@ namespace Formulas
 
         }
 
-        private void NumberEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> tuple)
+        private void NumberEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token)
         {
+            double leftOperand = values.Pop();
+            double rightOperand = Convert.ToDouble(token.Item1);
             if (operators.Peek().Equals("/"))
             {
+                // Remove the division from the operators stack.
                 operators.Pop();
-                double result = values.Pop() / values.Pop();
+                // Check for division by zero. Not allowed!
+                if (rightOperand == 0)
+                {
+                    throw new FormulaEvaluationException("Division by zero isn't allowed!");
+                }
+                //Evaluate the expression and push it to the values stack.
+                double result = values.Pop() / rightOperand;
                 values.Push(result);
 
             }
             else if (operators.Peek().Equals("*"))
             {
+                // Remove the multiplication from the operators stack.
                 operators.Pop();
-                double result = values.Pop() * values.Pop();
+                // Evaluate the expression and push it to the values stack.
+                double result = leftOperand * rightOperand;
                 values.Push(result);
             }
             else
             {
-                double tokenValue = Convert.ToDouble(tuple.Item1);
-                values.Push(tokenValue);
+                values.Push(rightOperand);
             }
         }
-        private void VarEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> tuple, Lookup lookup)
+        private void VarEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token, Lookup lookup)
         {
+            // Obtain the left and right operands for the expression.
+            double leftOperand = values.Pop();
+            double rightOperand;
+            try
+            {
+                rightOperand = lookup(token.Item1);
+            }
+            catch (Exception e)
+            {
+                // Throw an error if the lookup method has no assigned value for that string.
+                throw new FormulaEvaluationException("That variable isn't defined!");
+            }
+            // Checks to see if we are doing division or multiplication and acts accordingly.
+            if (operators.Peek().Equals("/"))
+            {
+                // Division by zero isn't allowed!
+                if (rightOperand == 0)
+                {
+                    throw new FormulaEvaluationException("Division by zero isn't allowed!");
+                }
+                // Pop the division operator from the operators stack and evaluate the 
+                // expression and push the result to the values stack.
+                operators.Pop();
+                double result = leftOperand / rightOperand;
+                values.Push(result);
 
+            }
+            else if (operators.Peek().Equals("*"))
+            {
+                // Pop the division operator from the operators stack and evaluate
+                // the expression and push the result to the values stack.               
+                operators.Pop();
+                double result = leftOperand * rightOperand;
+                values.Push(result);
+            }
+            // If no multiplacation or division is being done, just push the 
+            // rightOperand value onto the stack.
+            else
+            {
+                values.Push(rightOperand);
+            }
         }
 
-        private void OperEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> tuple)
+        private void OperEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token)
         {
+            // Checks to see what operator has been encountered and acts 
+            // accordingly.
+            switch (token.Item1)
+            {
+                /* For the addition and subtraction cases, we check to see if previous operands were
+                 * being added or subtracted. If so, we perform that operation, and push the result on
+                 * to the values stack. Regardless of whether or not we perform some kind of arithmetic,
+                 * we push the "+" or "-" operator on to the operators stack.
+                 *
+                 */
+                case "+":
+                    string oper = operators.Peek();
+                    double rightValue = values.Pop();
+                    double leftValue = values.Pop();
+                    if (oper.Equals("+"))
+                    {
 
+                    }
+                    else if (oper.Equals("-"))
+                    {
+
+                    }
+                    operators.Push(token.Item1);
+                    break;
+                case "-":
+                    break;
+                case "*":
+                    operators.Push(token.Item1);
+                    break;
+                case "/":
+                    operators.Push(token.Item1);
+                    break;
+                case "(":
+                    operators.Push(token.Item1);
+                    break;
+                case ")":
+                    break;
+            }
         }
 
 
 
         /// <summary>
-        /// Given a formula, enumerates the tokens that compose it.  Each token is described by a
-        /// Tuple containing the token's text and TokenType.  There are no empty tokens, and no
-        /// token contains white space.
+        /// Given a formula, enumerates the tokens that compose it.  Each token
+        /// is described by a Tuple containing the token's text and TokenType. 
+        /// There are no empty tokens, and no token contains white space.
         /// </summary>
         private static IEnumerable<Tuple<string, TokenType>> GetTokens(String formula)
         {
@@ -226,11 +306,12 @@ namespace Formulas
     };
 
     /// <summary>
-    /// A Lookup method is one that maps some strings to double values.  Given a string,
-    /// such a function can either return a double (meaning that the string maps to the
-    /// double) or throw an UndefinedVariableException (meaning that the string is unmapped 
-    /// to a value. Exactly how a Lookup method decides which strings map to doubles and which
-    /// don't is up to the implementation of the method.
+    /// A Lookup method is one that maps some strings to double values.  Given a
+    /// string, such a function can either return a double (meaning that the
+    /// string maps to the double) or throw an UndefinedVariableException
+    /// (meaning that the string is unmapped to a value. Exactly how a Lookup
+    /// method decides which strings map to doubles and which don't is up to the
+    /// implementation of the method.
     /// </summary>
     public delegate double Lookup(string var);
 
@@ -242,8 +323,8 @@ namespace Formulas
     public class UndefinedVariableException : Exception
     {
         /// <summary>
-        /// Constructs an UndefinedVariableException containing whose message is the
-        /// undefined variable.
+        /// Constructs an UndefinedVariableException containing whose message is
+        /// the undefined variable.
         /// </summary>
         /// <param name="variable"></param>
         public UndefinedVariableException(String variable)
@@ -253,13 +334,15 @@ namespace Formulas
     }
 
     /// <summary>
-    /// Used to report syntactic errors in the parameter to the Formula constructor.
+    /// Used to report syntactic errors in the parameter to the Formula
+    /// constructor.
     /// </summary>
     [Serializable]
     public class FormulaFormatException : Exception
     {
         /// <summary>
-        /// Constructs a FormulaFormatException containing the explanatory message.
+        /// Constructs a FormulaFormatException containing the explanatory
+        /// message.
         /// </summary>
         public FormulaFormatException(String message) : base(message)
         {
@@ -273,7 +356,8 @@ namespace Formulas
     public class FormulaEvaluationException : Exception
     {
         /// <summary>
-        /// Constructs a FormulaEvaluationException containing the explanatory message.
+        /// Constructs a FormulaEvaluationException containing the explanatory
+        /// message.
         /// </summary>
         public FormulaEvaluationException(String message) : base(message)
         {
