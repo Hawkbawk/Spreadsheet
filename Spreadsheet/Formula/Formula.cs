@@ -36,8 +36,12 @@ namespace Formulas
         /// If the formula is syntacticaly invalid, throws a FormulaFormatException with an 
         /// explanatory Message.
         /// </summary>
+
+        private IEnumerable<Tuple<string, TokenType>> storedFormula;
+
         public Formula(String formula)
         {
+            storedFormula = GetTokens(formula);
         }
         /// <summary>
         /// Evaluates this Formula, using the Lookup delegate to determine the values of variables.  (The
@@ -50,8 +54,14 @@ namespace Formulas
         /// </summary>
         public double Evaluate(Lookup lookup)
         {
-            return 1;
-            //This is for testing merging!
+            Stack<double> valueStack = new Stack<double>();
+            Stack<TokenType> operatorStack = new Stack<TokenType>();
+            foreach (Tuple<string, TokenType> tup in storedFormula)
+            {
+                
+            }
+            return 0;
+            
         }
 
         /// <summary>
