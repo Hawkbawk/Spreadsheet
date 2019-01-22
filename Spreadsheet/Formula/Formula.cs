@@ -65,7 +65,25 @@ namespace Formulas
                         break;
                 }
             }
-            return 0;
+            if (operators.Count == 0)
+            {
+                return values.Pop();
+            }
+            else
+            {
+                string oper = operators.Pop();
+                double rightValue = values.Pop();
+                double leftValue = values.Pop();
+                if (oper.Equals("+"))
+                {
+                    return leftValue + rightValue;
+                }
+                else
+                {
+                    return leftValue - rightValue;
+                }
+            }
+
 
         }
 
@@ -109,7 +127,7 @@ namespace Formulas
             {
                 rightOperand = lookup(token.Item1);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 // Throw an error if the lookup method has no assigned value for that string.
                 throw new FormulaEvaluationException("That variable isn't defined!");
@@ -149,6 +167,7 @@ namespace Formulas
         {
             // Checks to see what operator has been encountered and acts 
             // accordingly.
+
             switch (token.Item1)
             {
                 /* For the addition and subtraction cases, we check to see if previous operands were
@@ -161,17 +180,35 @@ namespace Formulas
                     string oper = operators.Peek();
                     double rightValue = values.Pop();
                     double leftValue = values.Pop();
+                    operators.Pop();
                     if (oper.Equals("+"))
                     {
-
+                        double result = leftValue + rightValue;
+                        values.Push(result);
                     }
                     else if (oper.Equals("-"))
                     {
-
+                        double result = leftValue - rightValue;
+                        values.Push(result);
                     }
                     operators.Push(token.Item1);
                     break;
                 case "-":
+                    oper = operators.Peek();
+                    rightValue = values.Pop();
+                    leftValue = values.Pop();
+                    operators.Pop();
+                    if (oper.Equals("+"))
+                    {
+                        double result = leftValue + rightValue;
+                        values.Push(result);
+                    }
+                    else if (oper.Equals("-"))
+                    {
+                        double result = leftValue - rightValue;
+                        values.Push(result);
+                    }
+                    operators.Push(token.Item1);
                     break;
                 case "*":
                     operators.Push(token.Item1);
@@ -183,6 +220,42 @@ namespace Formulas
                     operators.Push(token.Item1);
                     break;
                 case ")":
+                    /* Check to see if a plus or minus is at the top of the operator stack.
+                     * If one is, pop it off the operators stack, pull the top two values off
+                     * the values stack, perform the operation on those two numbers, and then
+                     * push that result on to the values stack. Finally, check to see if any 
+                     * multiplication or division needs to be done. If it does, perform the same
+                     * algorithm specified above one more time, with multiplication or division
+                     * instead of addition or subtraction.
+                     */
+                    oper = operators.Peek();
+                    rightValue = values.Pop();
+                    leftValue = values.Pop();
+                    operators.Pop();
+                    if (oper.Equals("+"))
+                    {
+                        double result = leftValue + rightValue;
+                        values.Push(result);
+                    }
+                    else if (oper.Equals("-"))
+                    {
+                        double result = leftValue - rightValue;
+                        values.Push(result);
+                    }
+                    operators.Pop();
+                    oper = operators.Peek();
+                    rightValue = values.Pop();
+                    leftValue = values.Pop();
+                    if (oper.Equals("*"))
+                    {
+                        double result = leftValue * rightValue;
+                        values.Push(result);
+                    }
+                    else if (oper.Equals("/"))
+                    {
+                        double result = leftValue / rightValue;
+                        values.Push(result);
+                    }
                     break;
             }
         }
