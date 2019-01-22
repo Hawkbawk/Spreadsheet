@@ -54,15 +54,60 @@ namespace Formulas
         /// </summary>
         public double Evaluate(Lookup lookup)
         {
-            Stack<double> valueStack = new Stack<double>();
-            Stack<TokenType> operatorStack = new Stack<TokenType>();
+            Stack<double> values = new Stack<double>();
+            Stack<string> operators = new Stack<string>();
             foreach (Tuple<string, TokenType> tup in storedFormula)
             {
-                
+                TokenType t = tup.Item2;
+                switch (t)
+                {
+                    case Number:
+                        NumberEncountered(values, operators, tup);
+                        break;
+                    case Var:
+                        VarEncountered(values, operators, tup, lookup);
+                        break;
+                    case Oper:
+                        OperEncountered(values, operators, tup);
+                        break;
+                }
             }
             return 0;
-            
+
         }
+
+        private void NumberEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> tuple)
+        {
+            if (operators.Peek().Equals("/"))
+            {
+                operators.Pop();
+                double result = values.Pop() / values.Pop();
+                values.Push(result);
+
+            }
+            else if (operators.Peek().Equals("*"))
+            {
+                operators.Pop();
+                double result = values.Pop() * values.Pop();
+                values.Push(result);
+            }
+            else
+            {
+                double tokenValue = Convert.ToDouble(tuple.Item1);
+                values.Push(tokenValue);
+            }
+        }
+        private void VarEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> tuple, Lookup lookup)
+        {
+
+        }
+
+        private void OperEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> tuple)
+        {
+
+        }
+
+
 
         /// <summary>
         /// Given a formula, enumerates the tokens that compose it.  Each token is described by a
