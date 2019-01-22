@@ -65,6 +65,20 @@ namespace Formulas
                         break;
                 }
             }
+            return finishEvaluation(values, operators);
+        }
+        /// <summary>
+        /// Finishes evaluating the stored formula. This method should only ever
+        /// be called after the Evaluate method, otherwise it has undefined
+        /// performance.
+        /// </summary>
+        /// <param name="values">A stack containing either one or two values.
+        ///     </param>
+        /// <param name="operators">Stack containing 0 or 1 arithmetic
+        ///     operators.</param>
+        /// <returns>The final result of the stored expression</returns>
+        private double finishEvaluation(Stack<double> values, Stack<string> operators)
+        {
             if (operators.Count == 0)
             {
                 return values.Pop();
@@ -83,15 +97,13 @@ namespace Formulas
                     return leftValue - rightValue;
                 }
             }
-
-
         }
 
         private void NumberEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token)
         {
             double leftOperand = values.Pop();
             double rightOperand = Convert.ToDouble(token.Item1);
-            if (operators.Peek().Equals("/"))
+            if (operatorStackCheck(operators).Equals("/"))
             {
                 // Remove the division from the operators stack.
                 operators.Pop();
@@ -259,8 +271,38 @@ namespace Formulas
                     break;
             }
         }
-
-
+        /// <summary>
+        /// Checks to see if the operators stack is empty. If it is, returns
+        /// null. Otherwise returns the result of operators.Peek().
+        /// </summary>
+        /// <param name="operators">A stack full of strings representing
+        ///     arithmetic operators.</param>
+        /// <returns>The result of operators.Peek() if operators isn't empty.
+        ///     Otherwise returns an empty string.</returns>
+        private string operatorStackCheck(Stack<string> operators)
+        {
+            if (operators.Count != 0)
+            {
+                return operators.Peek();
+            }
+            return "";
+        }
+        /// <summary>
+        /// Checks to see if the operators stack is empty. If it is, returns
+        /// null. Otherwise returns the result of values.Peek().
+        /// </summary>
+        /// <param name="values">A stack containing doubles that represent
+        ///     values in an expression.</param>
+        /// <returns>Returns the result of values.Peek() if the stack isn't
+        ///     empty. Otherwise returns -1.</returns>
+        private double valuesStackCheck(Stack<double> values)
+        {
+            if (values.Count != 0)
+            {
+                return values.Peek();
+            }
+            return -1;
+        }
 
         /// <summary>
         /// Given a formula, enumerates the tokens that compose it.  Each token
