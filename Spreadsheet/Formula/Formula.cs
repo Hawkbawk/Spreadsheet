@@ -17,31 +17,125 @@ namespace Formulas
     public class Formula
     {
         /// <summary>
-        /// Creates a Formula from a string that consists of a standard infix
-        /// expression composed from non-negative floating-point numbers (using
-        /// C#-like syntax for double/int literals), variable symbols (a letter
-        /// followed by zero or more letters and/or digits), left and right
-        /// parentheses, and the four binary operator symbols +, -, *, and /. 
-        /// White space is permitted between tokens, but is not required.
-        /// Examples of a valid parameter to this constructor are: "2.5e9 + x5 /
-        /// 17" "(5 * 2) + 8" "x*y-2+35/9" Examples of invalid parameters are:
-        /// "_" "-5.3" "2 5 + 3" If the formula is syntacticaly invalid, throws
-        /// a FormulaFormatException with an explanatory Message.
+        /// Initializes a new instance of the <see cref="Formula"/> class.
         /// </summary>
-
-        private IEnumerable<Tuple<string, TokenType>> storedFormula;
-
-        private const string add = "+";
-        private const string subtract = "-";
-        private const string multiply = "*";
-        private const string divide = "/";
-        private const string openParen = "(";
-        private const string closeParen = ")";
-
+        /// <param name="formula">The formula<see cref="String"/></param>
         public Formula(String formula)
         {
-            storedFormula = GetTokens(formula);
+            // Keeps track of how many opening and closing parentheses are in 
+            // the formula, as well as the number of tokens in the formula, 
+            // all for error checking. The number of opening and closing 
+            // parenthesis must match in the end, and the number of closing
+            // parenthesis should never exceed the number of closing
+            // parenthesis.
+            double rParenCount = 0;
+            double lParenCount = 0;
+            tokenCount = 0;
+
+            // Keeps track of the previous token encountered. Used to check if
+            // the formula ends with the appropriate type of token.
+            Tuple<string, TokenType> previousToken = new Tuple<string, TokenType>("", Invalid);
+
+            foreach (Tuple<string, TokenType> token in GetTokens(formula))
+            {
+                // The formula should only begin with a number, variable,
+                // or opening parenthesis.
+                if (tokenCount == 0)
+                {
+                    switch (token.Item2)
+                    {
+                        case Number:
+                            break;
+                        case Var:
+                            break;
+                        case LParen:
+                            break;
+                        default:
+                            throw new FormulaFormatException("Your formula " +
+                                "must begin with an opening parenthesis, variable, or number!");
+                    }
+                }
+                switch (token.Item2)
+                {
+                    case Invalid:
+                        throw new FormulaFormatException("There are invalid characters in your formula!");
+                    case LParen:
+                        lParenCount++;
+                        break;
+                    case RParen:
+                        rParenCount++;
+                        if (rParenCount > lParenCount)
+                        {
+                            throw new FormulaFormatException("Your parentheses don't match!");
+                        }
+                        break;
+                }
+                previousToken = token;
+                tokenCount++;
+            }
+
+            if (tokenCount == 0)
+            {
+                throw new FormulaFormatException("Please provide a formula, not just blank space.");
+            }
+            if (rParenCount != lParenCount)
+            {
+                throw new FormulaFormatException("The number of opening and closing parentheses doesn't match!");
+            }
+            switch (previousToken.Item2)
+            {
+                case RParen:
+                    break;
+                case Number:
+                    break;
+                case Var:
+                    break;
+                default:
+                    throw new FormulaFormatException("Your formula must end" +
+                        "with a closing parenthesis, number, or variable!");
+            }
         }
+
+        /// <summary>
+        /// Defines the tokenCount
+        /// </summary>
+        private int tokenCount;
+
+        /// <summary>
+        /// Defines the add
+        /// </summary>
+        private const string add = "+";
+
+        /// <summary>
+        /// Defines the storedFormula
+        /// </summary>
+        private IEnumerable<Tuple<string, TokenType>> storedFormula;
+
+        /// <summary>
+        /// Defines the subtract
+        /// </summary>
+        private const string subtract = "-";
+
+        /// <summary>
+        /// Defines the multiply
+        /// </summary>
+        private const string multiply = "*";
+
+        /// <summary>
+        /// Defines the divide
+        /// </summary>
+        private const string divide = "/";
+
+        /// <summary>
+        /// Defines the openParen
+        /// </summary>
+        private const string openParen = "(";
+
+        /// <summary>
+        /// Defines the closeParen
+        /// </summary>
+        private const string closeParen = ")";
+
         /// <summary>
         /// Evaluates this Formula, using the Lookup delegate to determine the
         /// values of variables.  (The delegate takes a variable name as a
@@ -52,6 +146,8 @@ namespace Formulas
         /// Formula, its value is returned.  Otherwise, throws a
         /// FormulaEvaluationException with an explanatory Message.
         /// </summary>
+        /// <param name="lookup">The lookup<see cref="Lookup"/></param>
+        /// <returns>The <see cref="double"/></returns>
         public double Evaluate(Lookup lookup)
         {
             Stack<double> values = new Stack<double>();
@@ -70,19 +166,24 @@ namespace Formulas
                     case Oper:
                         OperEncountered(values, operators, token);
                         break;
+                    case LParen:
+                        LParenEncountered(values, operators, token);
+                        break;
+                    case RParen:
+                        RParenEncountered(values, operators, token);
+                        break;
                 }
             }
             return finishEvaluation(values, operators);
         }
+
         /// <summary>
         /// Finishes evaluating the stored formula. This method should only ever
         /// be called after the Evaluate method, otherwise it has undefined
         /// performance.
         /// </summary>
-        /// <param name="values">A stack containing either one or two values.
-        ///     </param>
-        /// <param name="operators">Stack containing 0 or 1 arithmetic
-        ///     operators.</param>
+        /// <param name="values">The values<see cref="Stack{double}"/></param>
+        /// <param name="operators">The operators<see cref="Stack{string}"/></param>
         /// <returns>The final result of the stored expression</returns>
         private double finishEvaluation(Stack<double> values, Stack<string> operators)
         {
@@ -106,6 +207,12 @@ namespace Formulas
             }
         }
 
+        /// <summary>
+        /// The NumberEncountered
+        /// </summary>
+        /// <param name="values">The values<see cref="Stack{double}"/></param>
+        /// <param name="operators">The operators<see cref="Stack{string}"/></param>
+        /// <param name="token">The token<see cref="Tuple{string, TokenType}"/></param>
         private void NumberEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token)
         {
             double result = Convert.ToDouble(token.Item1);
@@ -144,7 +251,13 @@ namespace Formulas
             values.Push(result);
         }
 
-
+        /// <summary>
+        /// The VarEncountered
+        /// </summary>
+        /// <param name="values">The values<see cref="Stack{double}"/></param>
+        /// <param name="operators">The operators<see cref="Stack{string}"/></param>
+        /// <param name="token">The token<see cref="Tuple{string, TokenType}"/></param>
+        /// <param name="lookup">The lookup<see cref="Lookup"/></param>
         private void VarEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token, Lookup lookup)
         {
             double result = lookup(token.Item1);
@@ -183,6 +296,12 @@ namespace Formulas
             values.Push(result);
         }
 
+        /// <summary>
+        /// The OperEncountered
+        /// </summary>
+        /// <param name="values">The values<see cref="Stack{double}"/></param>
+        /// <param name="operators">The operators<see cref="Stack{string}"/></param>
+        /// <param name="token">The token<see cref="Tuple{string, TokenType}"/></param>
         private void OperEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token)
         {
 
@@ -190,9 +309,11 @@ namespace Formulas
             {
                 case "+":
                     addOrSubtractOperands(values, operators);
+                    operators.Push(token.Item1);
                     break;
                 case "-":
                     addOrSubtractOperands(values, operators);
+                    operators.Push(token.Item1);
                     break;
                 case "*":
                     operators.Push(token.Item1);
@@ -200,20 +321,72 @@ namespace Formulas
                 case "/":
                     operators.Push(token.Item1);
                     break;
-                case "(":
-                    operators.Push(token.Item1);
-                    break;
-                case ")":
-                    addOrSubtractOperands(values, operators);
-                    break;
             }
         }
+
+        /// <summary>
+        /// The LParenEncountered
+        /// </summary>
+        /// <param name="values">The values<see cref="Stack{double}"/></param>
+        /// <param name="operators">The operators<see cref="Stack{string}"/></param>
+        /// <param name="token">The token<see cref="Tuple{string, TokenType}"/></param>
+        private void LParenEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token)
+        {
+            operators.Push(token.Item1);
+        }
+
+        /// <summary>
+        /// The RParenEncountered
+        /// </summary>
+        /// <param name="values">The values<see cref="Stack{double}"/></param>
+        /// <param name="operators">The operators<see cref="Stack{string}"/></param>
+        /// <param name="token">The token<see cref="Tuple{string, TokenType}"/></param>
+        private void RParenEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token)
+        {
+            addOrSubtractOperands(values, operators);
+            operators.Pop();
+            string oper = "";
+            if (!isEmpty(operators))
+            {
+                oper = operators.Peek();
+            }
+            if (oper.Equals(multiply))
+            {
+                double rightOperand = -1;
+                double leftOperand = -1;
+                if (!isEmpty(values))
+                {
+                    rightOperand = values.Pop();
+                }
+                if (!isEmpty(values))
+                {
+                    leftOperand = values.Pop();
+                }
+                operators.Pop();
+                values.Push(leftOperand * rightOperand);
+            }
+            else if (oper.Equals(divide))
+            {
+                double rightOperand = -1;
+                double leftOperand = -1;
+                if (!isEmpty(values))
+                {
+                    rightOperand = values.Pop();
+                }
+                if (!isEmpty(values))
+                {
+                    leftOperand = values.Pop();
+                }
+                operators.Pop();
+                values.Push(leftOperand / rightOperand);
+            }
+        }
+
         /// <summary>
         /// Checks to see what operator is currently on top of the operators stack. If a "+" is at the top, calls the addOperands method. If a "-" is at the top, calls the subtractOperands method. Otherwise, no methods are called.
         /// </summary>
         /// <param name="values"></param>
         /// <param name="operators"></param>
-        /// <param name="oper"></param>
         private void addOrSubtractOperands(Stack<double> values, Stack<string> operators)
         {
             string oper = "";
@@ -230,8 +403,9 @@ namespace Formulas
                 subtractOperands(values, operators);
             }
         }
+
         /// <summary>
-        /// 
+        /// The subtractOperands
         /// </summary>
         /// <param name="values"></param>
         /// <param name="operators"></param>
@@ -252,8 +426,9 @@ namespace Formulas
             result = leftOperand - rightOperand;
             values.Push(result);
         }
+
         /// <summary>
-        /// 
+        /// The addOperands
         /// </summary>
         /// <param name="values"></param>
         /// <param name="operators"></param>
@@ -278,14 +453,9 @@ namespace Formulas
         /// <summary>
         /// Tells whether or not the given stack is empty.
         /// </summary>
-        /// <typeparam name="T">
-        /// The type of item in the Stack.</typeparam>
-        /// <param name="stack">
-        /// The Stack to be checked.
-        /// </param>
-        /// <returns>
-        /// True if the stack is empty, false otherwise.
-        /// </returns>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="stack">The stack<see cref="Stack{T}"/></param>
+        /// <returns>The <see cref="bool"/></returns>
         private bool isEmpty<T>(Stack<T> stack)
         {
             return stack.Count == 0;
@@ -296,6 +466,8 @@ namespace Formulas
         /// is described by a Tuple containing the token's text and TokenType. 
         /// There are no empty tokens, and no token contains white space.
         /// </summary>
+        /// <param name="formula">The formula<see cref="String"/></param>
+        /// <returns>The <see cref="IEnumerable{Tuple{string, TokenType}}"/></returns>
         private static IEnumerable<Tuple<string, TokenType>> GetTokens(String formula)
         {
             // Patterns for individual tokens.
@@ -380,27 +552,22 @@ namespace Formulas
         /// Left parenthesis
         /// </summary>
         LParen,
-
         /// <summary>
         /// Right parenthesis
         /// </summary>
         RParen,
-
         /// <summary>
         /// Operator symbol
         /// </summary>
         Oper,
-
         /// <summary>
         /// Variable
         /// </summary>
         Var,
-
         /// <summary>
         /// Double literal
         /// </summary>
         Number,
-
         /// <summary>
         /// Invalid token
         /// </summary>
@@ -425,8 +592,7 @@ namespace Formulas
     public class UndefinedVariableException : Exception
     {
         /// <summary>
-        /// Constructs an UndefinedVariableException containing whose message is
-        /// the undefined variable.
+        /// Initializes a new instance of the <see cref="UndefinedVariableException"/> class.
         /// </summary>
         /// <param name="variable"></param>
         public UndefinedVariableException(String variable)
@@ -443,9 +609,9 @@ namespace Formulas
     public class FormulaFormatException : Exception
     {
         /// <summary>
-        /// Constructs a FormulaFormatException containing the explanatory
-        /// message.
+        /// Initializes a new instance of the <see cref="FormulaFormatException"/> class.
         /// </summary>
+        /// <param name="message">The message<see cref="String"/></param>
         public FormulaFormatException(String message) : base(message)
         {
         }
@@ -458,9 +624,9 @@ namespace Formulas
     public class FormulaEvaluationException : Exception
     {
         /// <summary>
-        /// Constructs a FormulaEvaluationException containing the explanatory
-        /// message.
+        /// Initializes a new instance of the <see cref="FormulaEvaluationException"/> class.
         /// </summary>
+        /// <param name="message">The message<see cref="String"/></param>
         public FormulaEvaluationException(String message) : base(message)
         {
         }

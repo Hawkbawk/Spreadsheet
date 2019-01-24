@@ -56,7 +56,7 @@ namespace FormulaTestCases
         public void Evaluate1()
         {
             Formula f = new Formula("2+3");
-            Assert.AreEqual(f.Evaluate(v => 0), 5.0, 1e-6);
+            Assert.AreEqual(5.0, f.Evaluate(v => 0), 1e-6);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace FormulaTestCases
         /// evaluating the Formula is a FormulaEvaluationException.
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(FormulaEvaluationException))]
+        [ExpectedException(typeof(UndefinedVariableException))]
         public void Evaluate3()
         {
             Formula f = new Formula("x + y");
