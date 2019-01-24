@@ -28,21 +28,21 @@ namespace Formulas
             // parenthesis must match in the end, and the number of closing
             // parenthesis should never exceed the number of closing
             // parenthesis.
-            double rParenCount = 0;
-            double lParenCount = 0;
+            int rParenCount = 0;
+            int lParenCount = 0;
             tokenCount = 0;
 
             // Keeps track of the previous token encountered. Used to check if
             // the formula ends with the appropriate type of token.
             Tuple<string, TokenType> previousToken = new Tuple<string, TokenType>("", Invalid);
-
-            foreach (Tuple<string, TokenType> token in GetTokens(formula))
+            
+            foreach (Tuple<string, TokenType> currentToken in GetTokens(formula))
             {
                 // The formula should only begin with a number, variable,
                 // or opening parenthesis.
                 if (tokenCount == 0)
                 {
-                    switch (token.Item2)
+                    switch (currentToken.Item2)
                     {
                         case Number:
                             break;
@@ -55,7 +55,9 @@ namespace Formulas
                                 "must begin with an opening parenthesis, variable, or number!");
                     }
                 }
-                switch (token.Item2)
+                // The current token should be valid, and the number of closing
+                // parenthesis should never exceed the number of opening parenthesis.
+                switch (currentToken.Item2)
                 {
                     case Invalid:
                         throw new FormulaFormatException("There are invalid characters in your formula!");
@@ -70,30 +72,14 @@ namespace Formulas
                         }
                         break;
                 }
-                previousToken = token;
+                tokenOrderChecker(previousToken, currentToken);
+                previousToken = currentToken;
                 tokenCount++;
             }
+            endFormulaErrorCheck(lParenCount, rParenCount, previousToken);
+            // Once all error checking is done, we can finally store the formula.
+            storedFormula = GetTokens(formula);
 
-            if (tokenCount == 0)
-            {
-                throw new FormulaFormatException("Please provide a formula, not just blank space.");
-            }
-            if (rParenCount != lParenCount)
-            {
-                throw new FormulaFormatException("The number of opening and closing parentheses doesn't match!");
-            }
-            switch (previousToken.Item2)
-            {
-                case RParen:
-                    break;
-                case Number:
-                    break;
-                case Var:
-                    break;
-                default:
-                    throw new FormulaFormatException("Your formula must end" +
-                        "with a closing parenthesis, number, or variable!");
-            }
         }
 
         /// <summary>
@@ -135,6 +121,107 @@ namespace Formulas
         /// Defines the closeParen
         /// </summary>
         private const string closeParen = ")";
+
+
+        private void endFormulaErrorCheck(int lParenCount, int rParenCount, Tuple<string, TokenType> previousToken)
+        {
+            // The formula can't be empty.
+            if (tokenCount == 0)
+            {
+                throw new FormulaFormatException("Please provide a formula, not just blank space.");
+            }
+
+            // The number of opening and closing parenthesis have to match.
+            if (lParenCount != rParenCount)
+            {
+                throw new FormulaFormatException("The number of opening and closing parentheses doesn't match!");
+            }
+            // The last token in a formula has to be a closing parenthesis,
+            // a number, or a variable.
+            switch (previousToken.Item2)
+            {
+                case RParen:
+                    break;
+                case Number:
+                    break;
+                case Var:
+                    break;
+                default:
+                    throw new FormulaFormatException("Your formula must end" +
+                        "with a closing parenthesis, number, or variable!");
+            }
+        }
+
+        private void tokenOrderChecker(Tuple<string, TokenType> previousToken, Tuple<string, TokenType> currentToken)
+        {
+            // Only specific token types can follow other token types.
+            switch (previousToken.Item2)
+            {
+                // Only operators and closing parenthesis can follow a number.
+                case Number:
+                    switch (currentToken.Item2)
+                    {
+                        case Oper:
+                            break;
+                        case RParen:
+                            break;
+                        default:
+                            throw new FormulaFormatException("Your formula isn't in a valid format!");
+                    }
+                    break;
+                // Only operators and closing parenthesis can follow a variable.
+                case Var:
+                    switch (currentToken.Item2)
+                    {
+                        case Oper:
+                            break;
+                        case RParen:
+                            break;
+                        default:
+                            throw new FormulaFormatException("Your formula isn't in a valid format!");
+                    }
+                    break;
+                // Only numbers, variables, and closing parenthesis can
+                // follow opening parenthesis.
+                case LParen:
+                    switch (currentToken.Item2)
+                    {
+                        case Number:
+                            break;
+                        case Var:
+                            break;
+                        case RParen:
+                            break;
+                        default:
+                            throw new FormulaFormatException("Your formula isn't in a valid format!");
+                    }
+                    break;
+                case Oper:
+                    switch (currentToken.Item2)
+                    {
+                        case Number:
+                            break;
+                        case Var:
+                            break;
+                        case RParen:
+                            break;
+                        default:
+                            throw new FormulaFormatException("Your formula isn't in a valid format!");
+                    }
+                    break;
+                case RParen:
+                    switch (currentToken.Item2)
+                    {
+                        case Oper:
+                            break;
+                        case RParen:
+                            break;
+                        default:
+                            throw new FormulaFormatException("Your formula isn't in a valid format!");
+                    }
+                    break;
+            }
+        }
 
         /// <summary>
         /// Evaluates this Formula, using the Lookup delegate to determine the
