@@ -9,7 +9,8 @@ namespace FormulaTestCases
 {
     /// <summary>
     /// These test cases are in no sense comprehensive!  They are intended to show you how
-    /// client code can make use of the Formula class, and to show you how to create your
+    /// client code can make use of the Formula class, and to show you how to
+	/// create your
     /// own (which we strongly recommend).  To run them, pull down the Test menu and do
     /// Run > All Tests.
     /// </summary>
@@ -17,8 +18,8 @@ namespace FormulaTestCases
     public class UnitTests
     {
         /// <summary>
-        /// This tests that a syntactically incorrect parameter to Formula results
-        /// in a FormulaFormatException.
+        /// This tests that a syntactically incorrect parameter to Formula
+        /// results in a FormulaFormatException.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FormulaFormatException))]
@@ -48,8 +49,8 @@ namespace FormulaTestCases
         }
 
         /// <summary>
-        /// Checks to see if the constructor throws an error if too many 
-        /// closing parenthesis are found.
+        /// Checks to see if the constructor throws an error if too many closing
+        /// parenthesis are found.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FormulaFormatException))]
@@ -59,8 +60,8 @@ namespace FormulaTestCases
         }
 
         /// <summary>
-        /// Checks to see if the constructor throws an error if only 
-        /// parenthesis are in the formula.
+        /// Checks to see if the constructor throws an error if only parenthesis
+        /// are in the formula.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FormulaFormatException))]
@@ -70,8 +71,8 @@ namespace FormulaTestCases
         }
 
         /// <summary>
-        /// Checks to see if the constructor throws an error if not
-        /// enough closing parenthesis are found.
+        /// Checks to see if the constructor throws an error if not enough
+        /// closing parenthesis are found.
         /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FormulaFormatException))]
@@ -185,8 +186,7 @@ namespace FormulaTestCases
         }
 
         /// <summary>
-        /// Ensures that the class can handle just a single number as a 
-        /// formula.
+        /// Ensures that the class can handle just a single number as a formula.
         /// </summary>
         [TestMethod]
         public void Evaluate6()
@@ -265,8 +265,8 @@ namespace FormulaTestCases
         }
 
         /// <summary>
-        /// A Lookup method that maps x to 4.0, y to 6.0, and z to 8.0.
-        /// All other variables result in an UndefinedVariableException.
+        /// A Lookup method that maps x to 4.0, y to 6.0, and z to 8.0. All
+        /// other variables result in an UndefinedVariableException.
         /// </summary>
         /// <param name="v"></param>
         /// <returns></returns>
