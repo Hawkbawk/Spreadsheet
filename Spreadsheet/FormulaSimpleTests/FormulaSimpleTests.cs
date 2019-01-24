@@ -57,6 +57,7 @@ namespace FormulaTestCases
         {
             Formula f = new Formula("((3 + 9)))");
         }
+
         /// <summary>
         /// Checks to see if the constructor throws an error if only 
         /// parenthesis are in the formula.
@@ -89,6 +90,7 @@ namespace FormulaTestCases
         {
             Formula f = new Formula("");
         }
+
         /// <summary>
         /// Ensures that the constructor doesn't allow invalid tokens through.
         /// </summary>
@@ -98,6 +100,7 @@ namespace FormulaTestCases
         {
             Formula f = new Formula("17 _ 19");
         }
+
         /// <summary>
         /// Ensures that the constructor doesn't let the formula end with an
         /// invalid token.
@@ -108,6 +111,7 @@ namespace FormulaTestCases
         {
             Formula f = new Formula("(");
         }
+
         /// <summary>
         /// Ensures that variables can only be followed by operators or a 
         /// closing parenthesis.
@@ -179,6 +183,7 @@ namespace FormulaTestCases
             Formula f = new Formula("(x + y) * (z / x) * 1.0");
             Assert.AreEqual(f.Evaluate(Lookup4), 20.0, 1e-6);
         }
+
         /// <summary>
         /// Ensures that the class can handle just a single number as a 
         /// formula.
@@ -189,6 +194,7 @@ namespace FormulaTestCases
             Formula f = new Formula("((7))");
             Assert.AreEqual(f.Evaluate(Lookup4), 7, 1e-6);
         }
+
         /// <summary>
         /// Ensures that the Evaluate method doesn't try to divide by zero.
         /// </summary>
@@ -256,8 +262,8 @@ namespace FormulaTestCases
             String s = sb.ToString() + 10_000;
             Formula f = new Formula(s);
             Assert.AreEqual(50_005_000, f.Evaluate(Lookup4));
-
         }
+
         /// <summary>
         /// A Lookup method that maps x to 4.0, y to 6.0, and z to 8.0.
         /// All other variables result in an UndefinedVariableException.
