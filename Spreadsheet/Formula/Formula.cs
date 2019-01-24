@@ -31,6 +31,13 @@ namespace Formulas
 
         private IEnumerable<Tuple<string, TokenType>> storedFormula;
 
+        private const string add = "+";
+        private const string subtract = "-";
+        private const string multiply = "*";
+        private const string divide = "/";
+        private const string openParen = "(";
+        private const string closeParen = ")";
+
         public Formula(String formula)
         {
             storedFormula = GetTokens(formula);
@@ -101,126 +108,91 @@ namespace Formulas
 
         private void NumberEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token)
         {
-            double leftOperand = values.Pop();
-            double rightOperand = Convert.ToDouble(token.Item1);
-            if (operatorStackCheck(operators).Equals("/"))
+            double result = Convert.ToDouble(token.Item1);
+            string oper = "";
+            // Check what operator we're working with, if any.
+            if (!isEmpty(operators))
             {
-                // Remove the division from the operators stack.
-                operators.Pop();
-                // Check for division by zero. Not allowed!
-                if (rightOperand == 0)
+                oper = operators.Peek();
+            }
+            // Either multiply the result of values.Pop() with result, or divide it by result.
+            if (oper.Equals(multiply))
+            {
+                double leftOperand = -1;
+                if (!isEmpty(values))
                 {
-                    throw new FormulaEvaluationException("Division by zero isn't allowed!");
+                    leftOperand = values.Pop();
                 }
-                //Evaluate the expression and push it to the values stack.
-                double result = values.Pop() / rightOperand;
-                values.Push(result);
-
-            }
-            else if (operators.Peek().Equals("*"))
-            {
-                // Remove the multiplication from the operators stack.
+                // Get rid of the operator, cause we're using it.
                 operators.Pop();
-                // Evaluate the expression and push it to the values stack.
-                double result = leftOperand * rightOperand;
-                values.Push(result);
+
+                result = leftOperand * result;
             }
-            else
+            else if (oper.Equals(divide))
             {
-                values.Push(rightOperand);
+                double leftOperand = -1;
+                if (!isEmpty(values))
+                {
+                    leftOperand = values.Pop();
+                }
+                // Get rid of the operator, cause we're using it.
+                operators.Pop();
+
+                result = leftOperand / result;
             }
+            // Regardless of whether we've done any math, push the result on to the stack.
+            values.Push(result);
         }
+
+
         private void VarEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token, Lookup lookup)
         {
-            // Obtain the left and right operands for the expression.
-            double leftOperand = values.Pop();
-            double rightOperand;
-            try
+            double result = lookup(token.Item1);
+            string oper = "";
+            // Check what operator we're working with, if any.
+            if (!isEmpty(operators))
             {
-                rightOperand = lookup(token.Item1);
+                oper = operators.Peek();
             }
-            catch (Exception)
+            // Either multiply the result of values.Pop() with result, or divide it by result.
+            if (oper.Equals(multiply))
             {
-                // Throw an error if the lookup method has no assigned value for that string.
-                throw new FormulaEvaluationException("That variable isn't defined!");
-            }
-            // Checks to see if we are doing division or multiplication and acts accordingly.
-            if (operators.Peek().Equals("/"))
-            {
-                // Division by zero isn't allowed!
-                if (rightOperand == 0)
+                double leftOperand = -1;
+                if (!isEmpty(values))
                 {
-                    throw new FormulaEvaluationException("Division by zero isn't allowed!");
+                    leftOperand = values.Pop();
                 }
-                // Pop the division operator from the operators stack and evaluate the 
-                // expression and push the result to the values stack.
+                // Get rid of the operator, cause we're using it.
                 operators.Pop();
-                double result = leftOperand / rightOperand;
-                values.Push(result);
 
+                result = leftOperand * result;
             }
-            else if (operators.Peek().Equals("*"))
+            else if (oper.Equals(divide))
             {
-                // Pop the division operator from the operators stack and evaluate
-                // the expression and push the result to the values stack.               
+                double leftOperand = -1;
+                if (!isEmpty(values))
+                {
+                    leftOperand = values.Pop();
+                }
+                // Get rid of the operator, cause we're using it.
                 operators.Pop();
-                double result = leftOperand * rightOperand;
-                values.Push(result);
+
+                result = leftOperand / result;
             }
-            // If no multiplacation or division is being done, just push the 
-            // rightOperand value onto the stack.
-            else
-            {
-                values.Push(rightOperand);
-            }
+            // Regardless of whether we've done any math, push the result on to the stack.
+            values.Push(result);
         }
 
         private void OperEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token)
         {
-            // Checks to see what operator has been encountered and acts 
-            // accordingly.
 
             switch (token.Item1)
             {
-                /* For the addition and subtraction cases, we check to see if previous operands were
-                 * being added or subtracted. If so, we perform that operation, and push the result on
-                 * to the values stack. Regardless of whether or not we perform some kind of arithmetic,
-                 * we push the "+" or "-" operator on to the operators stack.
-                 *
-                 */
                 case "+":
-                    string oper = operators.Peek();
-                    double rightValue = values.Pop();
-                    double leftValue = values.Pop();
-                    operators.Pop();
-                    if (oper.Equals("+"))
-                    {
-                        double result = leftValue + rightValue;
-                        values.Push(result);
-                    }
-                    else if (oper.Equals("-"))
-                    {
-                        double result = leftValue - rightValue;
-                        values.Push(result);
-                    }
-                    operators.Push(token.Item1);
+                    addOrSubtractOperands(values, operators);
                     break;
                 case "-":
-                    oper = operators.Peek();
-                    rightValue = values.Pop();
-                    leftValue = values.Pop();
-                    operators.Pop();
-                    if (oper.Equals("+"))
-                    {
-                        double result = leftValue + rightValue;
-                        values.Push(result);
-                    }
-                    else if (oper.Equals("-"))
-                    {
-                        double result = leftValue - rightValue;
-                        values.Push(result);
-                    }
-                    operators.Push(token.Item1);
+                    addOrSubtractOperands(values, operators);
                     break;
                 case "*":
                     operators.Push(token.Item1);
@@ -232,76 +204,91 @@ namespace Formulas
                     operators.Push(token.Item1);
                     break;
                 case ")":
-                    /* Check to see if a plus or minus is at the top of the operator stack.
-                     * If one is, pop it off the operators stack, pull the top two values off
-                     * the values stack, perform the operation on those two numbers, and then
-                     * push that result on to the values stack. Finally, check to see if any 
-                     * multiplication or division needs to be done. If it does, perform the same
-                     * algorithm specified above one more time, with multiplication or division
-                     * instead of addition or subtraction.
-                     */
-                    oper = operators.Peek();
-                    rightValue = values.Pop();
-                    leftValue = values.Pop();
-                    operators.Pop();
-                    if (oper.Equals("+"))
-                    {
-                        double result = leftValue + rightValue;
-                        values.Push(result);
-                    }
-                    else if (oper.Equals("-"))
-                    {
-                        double result = leftValue - rightValue;
-                        values.Push(result);
-                    }
-                    operators.Pop();
-                    oper = operators.Peek();
-                    rightValue = values.Pop();
-                    leftValue = values.Pop();
-                    if (oper.Equals("*"))
-                    {
-                        double result = leftValue * rightValue;
-                        values.Push(result);
-                    }
-                    else if (oper.Equals("/"))
-                    {
-                        double result = leftValue / rightValue;
-                        values.Push(result);
-                    }
+                    addOrSubtractOperands(values, operators);
                     break;
             }
         }
         /// <summary>
-        /// Checks to see if the operators stack is empty. If it is, returns
-        /// null. Otherwise returns the result of operators.Peek().
+        /// Checks to see what operator is currently on top of the operators stack. If a "+" is at the top, calls the addOperands method. If a "-" is at the top, calls the subtractOperands method. Otherwise, no methods are called.
         /// </summary>
-        /// <param name="operators">A stack full of strings representing
-        ///     arithmetic operators.</param>
-        /// <returns>The result of operators.Peek() if operators isn't empty.
-        ///     Otherwise returns an empty string.</returns>
-        private string operatorStackCheck(Stack<string> operators)
+        /// <param name="values"></param>
+        /// <param name="operators"></param>
+        /// <param name="oper"></param>
+        private void addOrSubtractOperands(Stack<double> values, Stack<string> operators)
         {
-            if (operators.Count != 0)
+            string oper = "";
+            if (!isEmpty(operators))
             {
-                return operators.Peek();
+                oper = operators.Peek();
             }
-            return "";
+            if (oper.Equals(add))
+            {
+                addOperands(values, operators);
+            }
+            else if (oper.Equals(subtract))
+            {
+                subtractOperands(values, operators);
+            }
         }
         /// <summary>
-        /// Checks to see if the operators stack is empty. If it is, returns
-        /// null. Otherwise returns the result of values.Peek().
+        /// 
         /// </summary>
-        /// <param name="values">A stack containing doubles that represent
-        ///     values in an expression.</param>
-        /// <returns>Returns the result of values.Peek() if the stack isn't
-        ///     empty. Otherwise returns -1.</returns>
-        private double valuesStackCheck(Stack<double> values)
+        /// <param name="values"></param>
+        /// <param name="operators"></param>
+        private void subtractOperands(Stack<double> values, Stack<string> operators)
         {
-            if (values.Count != 0)
+            double result;
+            double rightOperand = -1;
+            double leftOperand = -1;
+            if (!isEmpty(values))
             {
-                return values.Peek();
+                rightOperand = values.Pop();
             }
-            return -1;
+            if (!isEmpty(values))
+            {
+                leftOperand = values.Pop();
+            }
+            operators.Pop();
+            result = leftOperand - rightOperand;
+            values.Push(result);
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="values"></param>
+        /// <param name="operators"></param>
+        private void addOperands(Stack<double> values, Stack<string> operators)
+        {
+            double result;
+            double rightOperand = -1;
+            double leftOperand = -1;
+            if (!isEmpty(values))
+            {
+                rightOperand = values.Pop();
+            }
+            if (!isEmpty(values))
+            {
+                leftOperand = values.Pop();
+            }
+            operators.Pop();
+            result = leftOperand + rightOperand;
+            values.Push(result);
+        }
+
+        /// <summary>
+        /// Tells whether or not the given stack is empty.
+        /// </summary>
+        /// <typeparam name="T">
+        /// The type of item in the Stack.</typeparam>
+        /// <param name="stack">
+        /// The Stack to be checked.
+        /// </param>
+        /// <returns>
+        /// True if the stack is empty, false otherwise.
+        /// </returns>
+        private bool isEmpty<T>(Stack<T> stack)
+        {
+            return stack.Count == 0;
         }
 
         /// <summary>
