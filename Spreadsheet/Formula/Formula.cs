@@ -19,7 +19,7 @@ namespace Formulas
         /// <summary>
         /// Initializes a new instance of the <see cref="Formula"/> class.
         /// </summary>
-        /// <param name="formula">The formula<see cref="String"/></param>
+        /// <param name="formula">A string representation of a mathematical formula./></param>
         public Formula(String formula)
         {
             // Keeps track of how many opening and closing parentheses are in 
@@ -35,7 +35,7 @@ namespace Formulas
             // Keeps track of the previous token encountered. Used to check if
             // the formula ends with the appropriate type of token.
             Tuple<string, TokenType> previousToken = new Tuple<string, TokenType>("", Invalid);
-            
+
             foreach (Tuple<string, TokenType> currentToken in GetTokens(formula))
             {
                 // The formula should only begin with a number, variable,
@@ -79,7 +79,6 @@ namespace Formulas
             endFormulaErrorCheck(lParenCount, rParenCount, previousToken);
             // Once all error checking is done, we can finally store the formula.
             storedFormula = GetTokens(formula);
-
         }
 
         /// <summary>
@@ -122,7 +121,12 @@ namespace Formulas
         /// </summary>
         private const string closeParen = ")";
 
-
+        /// <summary>
+        /// The endFormulaErrorCheck
+        /// </summary>
+        /// <param name="lParenCount"></param>
+        /// <param name="rParenCount"></param>
+        /// <param name="previousToken"></param>
         private void endFormulaErrorCheck(int lParenCount, int rParenCount, Tuple<string, TokenType> previousToken)
         {
             // The formula can't be empty.
@@ -152,6 +156,11 @@ namespace Formulas
             }
         }
 
+        /// <summary>
+        /// The tokenOrderChecker
+        /// </summary>
+        /// <param name="previousToken"></param>
+        /// <param name="currentToken"></param>
         private void tokenOrderChecker(Tuple<string, TokenType> previousToken, Tuple<string, TokenType> currentToken)
         {
             // Only specific token types can follow other token types.
@@ -190,7 +199,7 @@ namespace Formulas
                             break;
                         case Var:
                             break;
-                        case RParen:
+                        case LParen:
                             break;
                         default:
                             throw new FormulaFormatException("Your formula isn't in a valid format!");
@@ -203,7 +212,7 @@ namespace Formulas
                             break;
                         case Var:
                             break;
-                        case RParen:
+                        case LParen:
                             break;
                         default:
                             throw new FormulaFormatException("Your formula isn't in a valid format!");
@@ -331,6 +340,11 @@ namespace Formulas
                 }
                 // Get rid of the operator, cause we're using it.
                 operators.Pop();
+
+                if (result == 0)
+                {
+                    throw new FormulaEvaluationException("Division by zero isn't allowed!");
+                }
 
                 result = leftOperand / result;
             }
