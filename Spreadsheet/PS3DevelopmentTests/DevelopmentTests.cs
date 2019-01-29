@@ -24,6 +24,9 @@ namespace DevelopmentTests
             DependencyGraph t = new DependencyGraph();
             Assert.IsFalse(t.HasDependees("x"));
             Assert.IsFalse(t.HasDependents("x"));
+            t.AddDependency("x", "y");
+            Assert.IsTrue(t.HasDependents("x"));
+            Assert.IsTrue(t.HasDependees("y"));
         }
 
         [TestMethod()]
@@ -56,6 +59,7 @@ namespace DevelopmentTests
             Assert.AreEqual(t.Size, 1);
             t.RemoveDependency("x", "y");
             t.RemoveDependency("x", "y");
+            Assert.AreEqual(0, t.Size);
         }
 
         [TestMethod()]
