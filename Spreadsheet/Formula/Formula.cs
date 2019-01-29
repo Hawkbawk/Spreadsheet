@@ -19,7 +19,7 @@ namespace Formulas
         /// <summary>
         /// Initializes a new instance of the Formula class. Upon construction,
 		/// checks to see if the passed in formula is arithmetically correct,
-		/// and throws the appproriate error if it isn't.
+		/// and throws the appropriate error if it isn't.
         /// </summary>
         /// <param name="formula">A string representation of a mathematical formula./></param>
         public Formula(String formula)
