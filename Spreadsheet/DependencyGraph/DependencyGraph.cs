@@ -48,8 +48,20 @@ namespace Dependencies
     public class DependencyGraph
     {
 
+        /// <summary>
+        /// Contains a mapping of every node and their associated dependents.
+        /// </summary>
         private Dictionary<string, HashSet<string>> dependentsList;
+
+        /// <summary>
+        /// Contains a mapping of every of every node and their associated dependees.
+        /// </summary>
         private Dictionary<string, HashSet<string>> dependeesList;
+
+        /// <summary>
+        /// The number of dependencies in the DependencyGraph.
+        /// </summary>
+        public int Size { get; private set; }
 
         /// <summary>
         /// Creates a DependencyGraph containing no dependencies.
@@ -61,16 +73,18 @@ namespace Dependencies
             dependeesList = new Dictionary<string, HashSet<string>>();
         }
 
-        /// <summary>
-        /// The number of dependencies in the DependencyGraph.
-        /// </summary>
-        public int Size { get; private set; }
 
         /// <summary>
         /// Reports whether dependents(s) is non-empty.  Requires s != null.
         /// </summary>
+        /// <param name="s">
+        /// The string whose dependents status will be checked</param>
+        /// <returns>
+        /// True if s has dependents, otherwise returns false.</returns>
         public bool HasDependents(string s)
         {
+            // Obtain the dependents for s. If the HashSet isn't null or if
+            // it has some items in it, return true. Otherwise return false.
             dependentsList.TryGetValue(s, out HashSet<string> dependents);
             if (dependents != null && dependents.Count != 0)
             {
@@ -82,8 +96,14 @@ namespace Dependencies
         /// <summary>
         /// Reports whether dependees(s) is non-empty.  Requires s != null.
         /// </summary>
+        /// <param name="s">
+        /// The string whose dependee status will be checked.</param>
+        /// <returns>
+        /// True if s has dependees, false otherwise.</returns>
         public bool HasDependees(string s)
         {
+            // Obtain the dependees for s. If the HashSet isn't null or if
+            // it has some items in it, return true. Otherwise return false.
             dependeesList.TryGetValue(s, out HashSet<string> dependees);
             if (dependees != null && dependees.Count != 0)
             {
@@ -95,19 +115,29 @@ namespace Dependencies
         /// <summary>
         /// Enumerates dependents(s).  Requires s != null.
         /// </summary>
+        /// <param name="s">
+        /// The string whose list of dependents will be returned.</param>
+        /// <returns>
+        /// The dependents of s. If s has no dependents, returns an empty HashSet.</returns>
         public IEnumerable<string> GetDependents(string s)
         {
+            // If s already has dependents, return those dependents.
             dependentsList.TryGetValue(s, out HashSet<string> dependents);
             if (dependents != null)
             {
                 return dependents;
             }
+            // Otherwise return an empty HashSet.
             return new HashSet<string>();
         }
 
         /// <summary>
-        /// Enumerates dependees(s).  Requires s != null.
+        ///  Enumerates dependees(s).  Requires s != null.
         /// </summary>
+        /// <param name="s">
+        /// The string whose list of dependees will be returned.</param>
+        /// <returns>
+        /// The dependees of s. If s has no dependees, returns an empty HashSet.</returns>
         public IEnumerable<string> GetDependees(string s)
         {
             dependeesList.TryGetValue(s, out HashSet<string> dependees);
@@ -123,37 +153,50 @@ namespace Dependencies
         /// This has no effect if (s,t) already belongs to this DependencyGraph.
         /// Requires s != null and t != null.
         /// </summary>
+        /// <param name="s">
+        /// The dependee
+        /// </param>
+        /// <param name="t">
+        /// The dependent
+        /// </param>
         public void AddDependency(string s, string t)
         {
+            // Obtain the list of dependents for s.
             HashSet<string> dependents = new HashSet<string>();
             if (dependentsList.TryGetValue(s, out dependents))
             {
             }
             else
             {
+                // If s isn't in the dictionary, add it.
                 dependents = new HashSet<string>();
                 dependentsList.Add(s, dependents);
             }
+            // Add the string t to dependents(s). Return if t is already there.
             if (!dependents.Add(t))
             {
                 return;
             }
 
+            // Obtain the list of dependees for t.
             HashSet<string> dependees = new HashSet<string>();
             if (dependeesList.TryGetValue(t, out dependees))
             {
             }
             else
             {
+                // If t isn't in the dictionary, add it.
                 dependees = new HashSet<string>();
                 dependeesList.Add(t, dependees);
             }
 
+            // Add the string s to dependees(t). Return if s is already there.
             if (!dependees.Add(s))
             {
                 return;
             }
-            this.Size++;
+            // Adjust size accordingly.
+            Size++;
         }
 
         /// <summary>
@@ -161,8 +204,16 @@ namespace Dependencies
         /// Does nothing if (s,t) doesn't belong to this DependencyGraph.
         /// Requires s != null and t != null.
         /// </summary>
+        /// <param name="s">
+        /// The dependent
+        /// </param>
+        /// <param name="t">
+        /// The dependee
+        /// </param>
         public void RemoveDependency(string s, string t)
         {
+            // Obtain the list of dependents for s. If the list doesn't exist, 
+            // or doesn't contain t, simply return.
             HashSet<string> dependents;
             if (!dependentsList.TryGetValue(s, out dependents) || !dependents.Contains(t))
             {
@@ -170,13 +221,16 @@ namespace Dependencies
             }
             dependents.Remove(t);
 
+            // Obtain the list of dependees for t. If the list doesn't exist,
+            // or doesn't contain s, simply return.
             HashSet<string> dependees;
             if (!dependeesList.TryGetValue(t, out dependees) || !dependees.Contains(s))
             {
                 return;
             }
             dependees.Remove(s);
-            this.Size--;
+            // Adjust size accordingly.
+            Size--;
         }
 
         /// <summary>
@@ -184,18 +238,37 @@ namespace Dependencies
         /// t in newDependents, adds the dependency (s,t).
         /// Requires s != null and t != null.
         /// </summary>
+        /// <param name="s">
+        /// The string whose dependents will be replaced.
+        /// </param>
+        /// <param name="newDependents">
+        /// A list of new dependents for s.
+        /// </param>
         public void ReplaceDependents(string s, IEnumerable<string> newDependents)
         {
             HashSet<string> dependents;
             if (dependentsList.TryGetValue(s, out dependents) && dependents != null)
             {
-                dependents.Clear();
+                // Copy over the list of dependents, so we can safely use them
+                // without throwing a modification error.
+                List<string> dependentsArr = new List<string>();
+                foreach(string str in dependents)
+                {
+                    dependentsArr.Add(str);
+                }
+                // Delete all of s's dependencies.
+                foreach(string str in dependentsArr)
+                {
+                    this.RemoveDependency(s, str);
+                }
             }
             else
             {
+                // If s didn't exist in the dictionary, add it.
                 dependentsList.Add(s, new HashSet<string>());
             }
 
+            // Add the list of new dependencies.
             foreach (string dependent in newDependents)
             {
                 AddDependency(s, dependent);
@@ -207,19 +280,38 @@ namespace Dependencies
         /// s in newDependees, adds the dependency (s,t).
         /// Requires s != null and t != null.
         /// </summary>
+        /// <param name="t">
+        /// The dependent whose dependees will be replaced.
+        /// </param>
+        /// <param name="newDependees">
+        /// A list of t's new dependencies.
+        /// </param>
         public void ReplaceDependees(string t, IEnumerable<string> newDependees)
         {
             HashSet<string> dependees;
             if (dependeesList.TryGetValue(t, out dependees) && dependees != null)
             {
-                dependees.Clear();
+                // Copy over the list of dependees, so we can safely use them
+                // without throwing a modification error.
+                List<string> dependentsArr = new List<string>();
+                foreach (string str in dependees)
+                {
+                    dependentsArr.Add(str);
+                }
+                // Delete all of t's dependencies.
+                foreach (string str in dependentsArr)
+                {
+                    this.RemoveDependency(str, t);
+                }
             }
             else
             {
+                // If t doesn't exist in the dictionary, add it in. 
                 dependeesList.Add(t, new HashSet<string>());
             }
 
-            foreach(string dependee in newDependees)
+            // Add in all of the new dependencies.
+            foreach (string dependee in newDependees)
             {
                 AddDependency(dependee, t);
             }
