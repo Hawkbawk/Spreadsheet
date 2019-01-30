@@ -85,8 +85,9 @@ namespace Dependencies
         {
             // Obtain the dependents for s. If the HashSet isn't null or if
             // it has some items in it, return true. Otherwise return false.
-            dependentsList.TryGetValue(s, out HashSet<string> dependents);
-            if (dependents != null && dependents.Count != 0)
+            ;
+            if (dependentsList.TryGetValue(s, out HashSet<string> dependents)
+                && dependents.Count != 0)
             {
                 return true;
             }
@@ -104,8 +105,9 @@ namespace Dependencies
         {
             // Obtain the dependees for s. If the HashSet isn't null or if
             // it has some items in it, return true. Otherwise return false.
-            dependeesList.TryGetValue(s, out HashSet<string> dependees);
-            if (dependees != null && dependees.Count != 0)
+            ;
+            if (dependeesList.TryGetValue(s, out HashSet<string> dependees)
+                && dependees.Count != 0)
             {
                 return true;
             }
@@ -122,8 +124,7 @@ namespace Dependencies
         public IEnumerable<string> GetDependents(string s)
         {
             // If s already has dependents, return those dependents.
-            dependentsList.TryGetValue(s, out HashSet<string> dependents);
-            if (dependents != null)
+            if (dependentsList.TryGetValue(s, out HashSet<string> dependents))
             {
                 return dependents;
             }
@@ -140,8 +141,8 @@ namespace Dependencies
         /// The dependees of s. If s has no dependees, returns an empty HashSet.</returns>
         public IEnumerable<string> GetDependees(string s)
         {
-            dependeesList.TryGetValue(s, out HashSet<string> dependees);
-            if (dependees != null)
+            
+            if (dependeesList.TryGetValue(s, out HashSet<string> dependees))
             {
                 return dependees;
             }
