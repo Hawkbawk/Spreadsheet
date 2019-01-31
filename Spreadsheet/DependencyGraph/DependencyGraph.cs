@@ -141,7 +141,8 @@ namespace Dependencies
         /// The dependees of s. If s has no dependees, returns an empty HashSet.</returns>
         public IEnumerable<string> GetDependees(string s)
         {
-            
+            // @TODO Make sure and copy the list instead of simply passing
+            // the reference to the dependees HashSet.
             if (dependeesList.TryGetValue(s, out HashSet<string> dependees))
             {
                 return dependees;
@@ -163,7 +164,7 @@ namespace Dependencies
         public void AddDependency(string s, string t)
         {
             // Obtain the list of dependents for s.
-            HashSet<string> dependents = new HashSet<string>();
+            HashSet<string> dependents;
             if (dependentsList.TryGetValue(s, out dependents))
             {
             }
@@ -180,7 +181,7 @@ namespace Dependencies
             }
 
             // Obtain the list of dependees for t.
-            HashSet<string> dependees = new HashSet<string>();
+            HashSet<string> dependees;
             if (dependeesList.TryGetValue(t, out dependees))
             {
             }
@@ -253,14 +254,14 @@ namespace Dependencies
                 // Copy over the list of dependents, so we can safely use them
                 // without throwing a modification error.
                 List<string> dependentsArr = new List<string>();
-                foreach(string str in dependents)
+                foreach (string str in dependents)
                 {
                     dependentsArr.Add(str);
                 }
                 // Delete all of s's dependencies.
-                foreach(string str in dependentsArr)
+                foreach (string str in dependentsArr)
                 {
-                    this.RemoveDependency(s, str);
+                    RemoveDependency(s, str);
                 }
             }
             else
@@ -302,7 +303,7 @@ namespace Dependencies
                 // Delete all of t's dependencies.
                 foreach (string str in dependentsArr)
                 {
-                    this.RemoveDependency(str, t);
+                    RemoveDependency(str, t);
                 }
             }
             else
