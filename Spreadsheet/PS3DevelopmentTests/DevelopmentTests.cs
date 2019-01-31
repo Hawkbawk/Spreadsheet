@@ -377,6 +377,18 @@ namespace DevelopmentTests
             }
             Assert.AreEqual(1_000_000, t.Size);
         }
+
+        public void ReplaceDependeesNoDependees()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency("s", "d3");
+            t.AddDependency("d3", "t");
+            t.AddDependency("s", "jk");
+
+            List<string> ls = new List<string>();
+            t.ReplaceDependees("s", ls);
+            Assert.AreEqual(new HashSet<string>(), t.GetDependees("s"));
+        }
         /// <summary>
         /// Generates random strings for stress testing the DependencyGraph 
         /// class
@@ -397,5 +409,9 @@ namespace DevelopmentTests
 
             return str.ToString();
         }
+
+
+        
+        
     }
 }

@@ -2,6 +2,14 @@
 
 using System.Collections.Generic;
 
+/// <summary>
+/// <author>
+/// Ryan Hawkins
+/// </author>
+/// <remarks>
+/// Written on January 31, 2019.
+/// </remarks>
+/// </summary>
 namespace Dependencies
 {
     /// <summary>
@@ -126,7 +134,7 @@ namespace Dependencies
             // If s already has dependents, return those dependents.
             if (dependentsList.TryGetValue(s, out HashSet<string> dependents))
             {
-                return dependents;
+                return new HashSet<string>(dependents);
             }
             // Otherwise return an empty HashSet.
             return new HashSet<string>();
@@ -145,7 +153,7 @@ namespace Dependencies
             // the reference to the dependees HashSet.
             if (dependeesList.TryGetValue(s, out HashSet<string> dependees))
             {
-                return dependees;
+                return new HashSet<string>(dependees);
             }
             return new HashSet<string>();
         }
@@ -253,11 +261,7 @@ namespace Dependencies
             {
                 // Copy over the list of dependents, so we can safely use them
                 // without throwing a modification error.
-                List<string> dependentsArr = new List<string>();
-                foreach (string str in dependents)
-                {
-                    dependentsArr.Add(str);
-                }
+                IEnumerable<string> dependentsArr = this.GetDependents(s);
                 // Delete all of s's dependencies.
                 foreach (string str in dependentsArr)
                 {
@@ -293,15 +297,11 @@ namespace Dependencies
             HashSet<string> dependees;
             if (dependeesList.TryGetValue(t, out dependees) && dependees != null)
             {
-                // Copy over the list of dependees, so we can safely use them
-                // without throwing a modification error.
-                List<string> dependentsArr = new List<string>();
-                foreach (string str in dependees)
-                {
-                    dependentsArr.Add(str);
-                }
+                // Obtain a copy of the list of dependees so we can iterate 
+                // over it and change it at the same time.
+                IEnumerable<string> dependeesArr = this.GetDependees(t);
                 // Delete all of t's dependencies.
-                foreach (string str in dependentsArr)
+                foreach (string str in dependeesArr)
                 {
                     RemoveDependency(str, t);
                 }
