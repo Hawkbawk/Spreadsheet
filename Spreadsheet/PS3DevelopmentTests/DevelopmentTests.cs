@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace DevelopmentTests
@@ -378,6 +379,7 @@ namespace DevelopmentTests
             Assert.AreEqual(1_000_000, t.Size);
         }
 
+        [TestMethod]
         public void ReplaceDependeesNoDependees()
         {
             DependencyGraph t = new DependencyGraph();
@@ -387,7 +389,39 @@ namespace DevelopmentTests
 
             List<string> ls = new List<string>();
             t.ReplaceDependees("s", ls);
-            Assert.AreEqual(new HashSet<string>(), t.GetDependees("s"));
+
+            Enumerable.SequenceEqual(new List<string>(), t.GetDependees("s"));
+        }
+
+        [TestMethod]
+        public void ReplaceDependentsNoDependents()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency("s", "d3");
+            t.AddDependency("d3", "t");
+            t.AddDependency("s", "jk");
+
+
+        }
+
+        [TestMethod]
+        public void RemoveNonExistentDependency()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency("s", "d3");
+            t.AddDependency("d3", "t");
+            t.AddDependency("s", "jk");
+            t.RemoveDependency("s", "98");
+        }
+
+        [TestMethod]
+        public void RemoveNonExistentPairing()
+        {
+            DependencyGraph t = new DependencyGraph();
+            t.AddDependency("s", "d3");
+            t.AddDependency("d3", "t");
+            t.AddDependency("s", "jk");
+            t.RemoveDependency("h", "m");
         }
         /// <summary>
         /// Generates random strings for stress testing the DependencyGraph 

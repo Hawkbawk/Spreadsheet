@@ -201,10 +201,7 @@ namespace Dependencies
             }
 
             // Add the string s to dependees(t). Return if s is already there.
-            if (!dependees.Add(s))
-            {
-                return;
-            }
+            dependees.Add(s);
             // Adjust size accordingly.
             Size++;
         }
