@@ -92,8 +92,7 @@ namespace Dependencies
         public bool HasDependents(string s)
         {
             // Obtain the dependents for s. If the HashSet isn't null or if
-            // it has some items in it, return true. Otherwise return false.
-            ;
+            // it has some items in it, return true. Otherwise return false.            
             if (dependentsList.TryGetValue(s, out HashSet<string> dependents)
                 && dependents.Count != 0)
             {
@@ -113,7 +112,6 @@ namespace Dependencies
         {
             // Obtain the dependees for s. If the HashSet isn't null or if
             // it has some items in it, return true. Otherwise return false.
-            ;
             if (dependeesList.TryGetValue(s, out HashSet<string> dependees)
                 && dependees.Count != 0)
             {
