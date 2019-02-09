@@ -11,7 +11,7 @@ namespace Formulas
     /// Represents formulas written in standard infix notation using standard
     /// precedence rules.  Provides a means to evaluate Formulas.  Formulas can
     /// be composed of non-negative floating-point numbers, variables, left and
-    /// right parentheses, and the four binary operator symbols +, -, *, and /. 
+    /// right parentheses, and the four binary operator symbols +, -, *, and /.
     /// (The unary operators + and - are not allowed.)
     /// </summary>
     public class Formula
@@ -24,7 +24,7 @@ namespace Formulas
         /// <param name="formula">A string representation of a mathematical formula./></param>
         public Formula(String formula)
         {
-            // Keeps track of how many opening and closing parentheses are in 
+            // Keeps track of how many opening and closing parentheses are in
             // the formula, as well as the number of tokens in the formula, all
             // for error checking. The number of opening and closing parenthesis
             // must match in the end, and the number of closing parenthesis
@@ -47,10 +47,13 @@ namespace Formulas
                     {
                         case Number:
                             break;
+
                         case Var:
                             break;
+
                         case LParen:
                             break;
+
                         default:
                             throw new FormulaFormatException("Your formula " +
                                 "must begin with an opening parenthesis, variable, or number!");
@@ -58,7 +61,7 @@ namespace Formulas
                 }
                 // The current token should be valid, and the number of closing
                 // parenthesis should never exceed the number of opening
-				// parenthesis.
+                // parenthesis.
                 switch (currentToken.Item2)
                 {
                     case Invalid:
@@ -66,6 +69,7 @@ namespace Formulas
                     case LParen:
                         lParenCount++;
                         break;
+
                     case RParen:
                         rParenCount++;
                         if (rParenCount > lParenCount)
@@ -80,7 +84,7 @@ namespace Formulas
             }
             endFormulaErrorCheck(lParenCount, rParenCount, previousToken);
             // Once all error checking is done, we can finally store the
-			// formula.
+            // formula.
             storedFormula = GetTokens(formula);
         }
 
@@ -155,10 +159,13 @@ namespace Formulas
             {
                 case RParen:
                     break;
+
                 case Number:
                     break;
+
                 case Var:
                     break;
+
                 default:
                     throw new FormulaFormatException("Your formula must end" +
                         "with a closing parenthesis, number, or variable!");
@@ -185,8 +192,10 @@ namespace Formulas
                     {
                         case Oper:
                             break;
+
                         case RParen:
                             break;
+
                         default:
                             throw new FormulaFormatException("Your formula isn't in a valid format!");
                     }
@@ -197,8 +206,10 @@ namespace Formulas
                     {
                         case Oper:
                             break;
+
                         case RParen:
                             break;
+
                         default:
                             throw new FormulaFormatException("Your formula isn't in a valid format!");
                     }
@@ -210,38 +221,46 @@ namespace Formulas
                     {
                         case Number:
                             break;
+
                         case Var:
                             break;
+
                         case LParen:
                             break;
+
                         default:
                             throw new FormulaFormatException("Your formula isn't in a valid format!");
                     }
                     break;
                 // Operators can only be followed by numbers, variable, and
-				// opening parenthesis.
+                // opening parenthesis.
                 case Oper:
                     switch (currentToken.Item2)
                     {
                         case Number:
                             break;
+
                         case Var:
                             break;
+
                         case LParen:
                             break;
+
                         default:
                             throw new FormulaFormatException("Your formula isn't in a valid format!");
                     }
                     break;
                 // Closing parenthesis can only be followed by operators or
-				// another closing parenthesis.
+                // another closing parenthesis.
                 case RParen:
                     switch (currentToken.Item2)
                     {
                         case Oper:
                             break;
+
                         case RParen:
                             break;
+
                         default:
                             throw new FormulaFormatException("Your formula isn't in a valid format!");
                     }
@@ -275,15 +294,19 @@ namespace Formulas
                     case Number:
                         NumberEncountered(values, operators, token);
                         break;
+
                     case Var:
                         VarEncountered(values, operators, token, lookup);
                         break;
+
                     case Oper:
                         OperEncountered(values, operators, token);
                         break;
+
                     case LParen:
                         LParenEncountered(values, operators, token);
                         break;
+
                     case RParen:
                         RParenEncountered(values, operators, token);
                         break;
@@ -339,7 +362,7 @@ namespace Formulas
                 oper = operators.Peek();
             }
             // Either multiply the result of values.Pop() with result, or divide
-			// it by result.
+            // it by result.
             if (oper.Equals(multiply))
             {
                 double leftOperand = -1;
@@ -370,7 +393,7 @@ namespace Formulas
                 result = leftOperand / result;
             }
             // Regardless of whether we've done any math, push the result on to
-			// the stack.
+            // the stack.
             values.Push(result);
         }
 
@@ -383,7 +406,15 @@ namespace Formulas
         /// <param name="token">The current token.</param>
         private void VarEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token, Lookup lookup)
         {
-            double result = lookup(token.Item1);
+            double result = 0;
+            try
+            {
+                result = lookup(token.Item1);
+            }
+            catch (UndefinedVariableException)
+            {
+                throw new FormulaEvaluationException("Your formula contains undefined variables!");
+            }
             string oper = "";
             // Check what operator we're working with, if any.
             if (!isEmpty(operators))
@@ -391,7 +422,7 @@ namespace Formulas
                 oper = operators.Peek();
             }
             // Either multiply the result of values.Pop() with result, or divide
-			// it by result.
+            // it by result.
             if (oper.Equals(multiply))
             {
                 double leftOperand = -1;
@@ -417,7 +448,7 @@ namespace Formulas
                 result = leftOperand / result;
             }
             // Regardless of whether we've done any math, push the result on to
-			// the stack.
+            // the stack.
             values.Push(result);
         }
 
@@ -430,20 +461,22 @@ namespace Formulas
         /// <param name="token">The current token.</param>
         private void OperEncountered(Stack<double> values, Stack<string> operators, Tuple<string, TokenType> token)
         {
-
             switch (token.Item1)
             {
                 case "+":
                     addOrSubtractOperands(values, operators);
                     operators.Push(token.Item1);
                     break;
+
                 case "-":
                     addOrSubtractOperands(values, operators);
                     operators.Push(token.Item1);
                     break;
+
                 case "*":
                     operators.Push(token.Item1);
                     break;
+
                 case "/":
                     operators.Push(token.Item1);
                     break;
@@ -507,6 +540,10 @@ namespace Formulas
                     leftOperand = values.Pop();
                 }
                 operators.Pop();
+                if (rightOperand == 0)
+                {
+                    throw new FormulaEvaluationException("Division by zero isn't allowed!");
+                }
                 values.Push(leftOperand / rightOperand);
             }
         }
@@ -603,7 +640,7 @@ namespace Formulas
 
         /// <summary>
         /// Given a formula, enumerates the tokens that compose it.  Each token
-        /// is described by a Tuple containing the token's text and TokenType. 
+        /// is described by a Tuple containing the token's text and TokenType.
         /// There are no empty tokens, and no token contains white space.
         /// </summary>
         /// <param name="formula">The formula<see cref="String"/></param>
@@ -618,7 +655,7 @@ namespace Formulas
 
             // NOTE:  I have added white space to this regex to make it more readable.
             // When the regex is used, it is necessary to include a parameter
-			// that says
+            // that says
             // embedded white space should be ignored.  See below for an example of this.
             String doublePattern = @"(?: \d+\.\d* | \d*\.\d+ | \d+ ) (?: e[\+-]?\d+)?";
             String spacePattern = @"\s+";
@@ -628,7 +665,7 @@ namespace Formulas
             String tokenPattern = String.Format("({0}) | ({1}) | ({2}) | ({3}) | ({4}) | ({5}) | (.)",
                                             spacePattern, lpPattern, rpPattern, opPattern, varPattern, doublePattern);
 
-            // Create a Regex for matching tokens.  Notice the second parameter to Split says 
+            // Create a Regex for matching tokens.  Notice the second parameter to Split says
             // to ignore embedded white space in the pattern.
             Regex r = new Regex(tokenPattern, RegexOptions.IgnorePatternWhitespace);
 
@@ -693,22 +730,27 @@ namespace Formulas
         /// Left parenthesis
         /// </summary>
         LParen,
+
         /// <summary>
         /// Right parenthesis
         /// </summary>
         RParen,
+
         /// <summary>
         /// Operator symbol
         /// </summary>
         Oper,
+
         /// <summary>
         /// Variable
         /// </summary>
         Var,
+
         /// <summary>
         /// Double literal
         /// </summary>
         Number,
+
         /// <summary>
         /// Invalid token
         /// </summary>

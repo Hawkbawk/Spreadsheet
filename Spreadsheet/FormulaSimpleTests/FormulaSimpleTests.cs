@@ -114,7 +114,7 @@ namespace FormulaTestCases
         }
 
         /// <summary>
-        /// Ensures that variables can only be followed by operators or a 
+        /// Ensures that variables can only be followed by operators or a
         /// closing parenthesis.
         /// </summary>
         [TestMethod]
@@ -157,7 +157,7 @@ namespace FormulaTestCases
         /// evaluating the Formula is a FormulaEvaluationException.
         /// </summary>
         [TestMethod]
-        [ExpectedException(typeof(UndefinedVariableException))]
+        [ExpectedException(typeof(FormulaEvaluationException))]
         public void Evaluate3()
         {
             Formula f = new Formula("x + y");
