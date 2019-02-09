@@ -22,7 +22,7 @@ namespace Formulas
 		/// and throws the appropriate error if it isn't.
         /// </summary>
         /// <param name="formula">A string representation of a mathematical formula./></param>
-        public Formula(String formula)
+        public Formula(string formula) : this(formula, s => s, s => true)
         {
             // Keeps track of how many opening and closing parentheses are in
             // the formula, as well as the number of tokens in the formula, all
@@ -88,8 +88,23 @@ namespace Formulas
             storedFormula = GetTokens(formula);
         }
 
-        public Formula(string Formula, Normalizer n, Validator v)
+        public Formula(string formula, Normalizer n, Validator v)
         {
+            // After checking for errors in the base formula, we also need to check for errors with the Normalizer and
+            foreach (Token token in GetTokens(formula))
+            {
+                string currentVar = "";
+                if (token.Type == Var)
+                {
+                    currentVar = n(token.Text);
+                }
+                string pattern = @"^([a-zA-Z]\w*)$";
+                Regex r = new Regex(pattern);
+                if (!r.IsMatch(currentVar))
+                {
+                    throw new FormulaFormatException("Your normalizer creates invalid variables!");
+                }
+            }
         }
 
         /// <summary>
