@@ -219,6 +219,7 @@ namespace DevelopmentTests
             Assert.IsTrue(t.HasDependents("b"));
             Assert.IsTrue(t.HasDependees("b"));
         }
+
         /// <summary>
         /// Ensures that the ReplaceDependees method performs as specified.
         /// Specifically checks to see if size is updating correctly and that
@@ -248,8 +249,9 @@ namespace DevelopmentTests
             Assert.IsFalse(t.HasDependents("z"));
             Assert.IsFalse(t.HasDependees("y"));
         }
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         [TestMethod]
         public void TestReplaceDependentsSizeChange()
@@ -281,10 +283,10 @@ namespace DevelopmentTests
             Assert.IsFalse(t.HasDependees("d"));
             Assert.IsFalse(t.HasDependees("f"));
             Assert.IsFalse(t.HasDependees("g"));
-
         }
+
         /// <summary>
-        /// Stress tests the AddDependency method by adding 1,000,000 
+        /// Stress tests the AddDependency method by adding 1,000,000
         /// dependencies, all with the same dependent.
         /// </summary>
         [TestMethod]
@@ -298,7 +300,6 @@ namespace DevelopmentTests
             sw.Start();
             for (int i = 0; i < 1_000_000; i++)
             {
-
                 t.AddDependency("s", RandomStringGenerator(30, r));
             }
 
@@ -310,6 +311,7 @@ namespace DevelopmentTests
             }
             */
         }
+
         /// <summary>
         /// Stress tests the ReplaceDependents method by adding 1,000,000
         /// dependencies to the DependencyGraph and then replacing all of them
@@ -324,7 +326,6 @@ namespace DevelopmentTests
 
             for (int i = 0; i < 1_000_000; i++)
             {
-
                 t.AddDependency("s", RandomStringGenerator(15, r));
             }
 
@@ -359,7 +360,6 @@ namespace DevelopmentTests
             Stopwatch sw = new Stopwatch();
             for (int i = 0; i < 1_000_000; i++)
             {
-
                 t.AddDependency(RandomStringGenerator(15, r), "s");
             }
 
@@ -400,8 +400,6 @@ namespace DevelopmentTests
             t.AddDependency("s", "d3");
             t.AddDependency("d3", "t");
             t.AddDependency("s", "jk");
-
-
         }
 
         [TestMethod]
@@ -423,8 +421,9 @@ namespace DevelopmentTests
             t.AddDependency("s", "jk");
             t.RemoveDependency("h", "m");
         }
+
         /// <summary>
-        /// Generates random strings for stress testing the DependencyGraph 
+        /// Generates random strings for stress testing the DependencyGraph
         /// class
         /// </summary>
         /// <param name="length">
@@ -443,9 +442,5 @@ namespace DevelopmentTests
 
             return str.ToString();
         }
-
-
-        
-        
     }
 }
