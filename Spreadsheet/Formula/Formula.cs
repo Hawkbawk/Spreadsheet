@@ -22,13 +22,16 @@ namespace Formulas
 		/// and throws the appropriate error if it isn't.
         /// </summary>
         /// <param name="formula">A string representation of a mathematical formula./></param>
-        public Formula(string formula) : this(formula, s => s, s => true)
+        public Formula(string formula) : this(formula, s => s, s => true) { }
+
+        public Formula(string formula, Normalizer n, Validator v)
         {
             // Keeps track of how many opening and closing parentheses are in
             // the formula, as well as the number of tokens in the formula, all
             // for error checking. The number of opening and closing parenthesis
             // must match in the end, and the number of closing parenthesis
             // should never exceed the number of closing parenthesis.
+            storedFormula = new List<Token>();
             int rParenCount = 0;
             int lParenCount = 0;
             tokenCount = 0;
@@ -83,13 +86,7 @@ namespace Formulas
                 tokenCount++;
             }
             endFormulaErrorCheck(lParenCount, rParenCount, previousToken);
-            // Once all error checking is done, we can finally store the
-            // formula.
-            storedFormula = GetTokens(formula);
-        }
 
-        public Formula(string formula, Normalizer n, Validator v)
-        {
             // After checking for errors in the base formula, we also need to check for errors with the Normalizer and
             foreach (Token token in GetTokens(formula))
             {
@@ -98,12 +95,22 @@ namespace Formulas
                 {
                     currentVar = n(token.Text);
                 }
+                else
+                {
+                    storedFormula.Add(token);
+                    continue;
+                }
                 string pattern = @"^([a-zA-Z]\w*)$";
                 Regex r = new Regex(pattern);
                 if (!r.IsMatch(currentVar))
                 {
                     throw new FormulaFormatException("Your normalizer creates invalid variables!");
                 }
+                if (!v(currentVar))
+                {
+                    throw new FormulaFormatException("Your Validator says that you have an invalid Normalizer");
+                }
+                storedFormula.Add(token);
             }
         }
 
@@ -120,7 +127,7 @@ namespace Formulas
         /// <summary>
         /// Stores the formula in an IEnumerable structure.
         /// </summary>
-        private IEnumerable<Token> storedFormula;
+        private List<Token> storedFormula;
 
         /// <summary>
         /// Defines the subtract operator as a string.
