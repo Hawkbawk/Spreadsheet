@@ -29,6 +29,17 @@ namespace FormulaTestCases
         }
 
         /// <summary>
+        /// Ensures that variables can only be followed by operators or a
+        /// closing parenthesis.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Construct10()
+        {
+            Formula f = new Formula("x 9");
+        }
+
+        /// <summary>
         /// This is another syntax error
         /// </summary>
         [TestMethod]
@@ -114,17 +125,6 @@ namespace FormulaTestCases
         }
 
         /// <summary>
-        /// Ensures that variables can only be followed by operators or a
-        /// closing parenthesis.
-        /// </summary>
-        [TestMethod]
-        [ExpectedException(typeof(FormulaFormatException))]
-        public void Construct10()
-        {
-            Formula f = new Formula("x 9");
-        }
-
-        /// <summary>
         /// Makes sure that "2+3" evaluates to 5.  Since the Formula
         /// contains no variables, the delegate passed in as the
         /// parameter doesn't matter.  We are passing in one that
@@ -135,6 +135,44 @@ namespace FormulaTestCases
         {
             Formula f = new Formula("2+3");
             Assert.AreEqual(5.0, f.Evaluate(v => 0), 1e-6);
+        }
+
+        /// <summary>
+        /// Ensures that the Evaluate method divides after reaching a closing
+        /// parenthesis.
+        /// </summary>
+        [TestMethod]
+        public void Evaluate10()
+        {
+            Formula f = new Formula("(3 + 7) / (4 + 6)");
+            Assert.AreEqual(1, f.Evaluate(v => 0));
+        }
+
+        /// <summary>
+        /// Ensures that the Evaluate method can handle multiplication of two
+        /// adjacent variables.
+        /// </summary>
+        [TestMethod]
+        public void Evaluate11()
+        {
+            Formula f = new Formula(" x * y");
+            Assert.AreEqual(24, f.Evaluate(Lookup4));
+        }
+
+        /// <summary>
+        /// The big daddy of a formula. A stress test for the Evaluate method.
+        /// </summary>
+        [TestMethod]
+        public void Evaluate12()
+        {
+            StringBuilder sb = new StringBuilder("", 20_000);
+            for (int i = 1; i <= 9_999; i++)
+            {
+                sb.Append(i + "+");
+            }
+            String s = sb.ToString() + 10_000;
+            Formula f = new Formula(s);
+            Assert.AreEqual(50_005_000, f.Evaluate(Lookup4));
         }
 
         /// <summary>
@@ -224,44 +262,6 @@ namespace FormulaTestCases
         {
             Formula f = new Formula("(17 - 4 - 3)");
             Assert.AreEqual(10, f.Evaluate(Lookup4));
-        }
-
-        /// <summary>
-        /// Ensures that the Evaluate method divides after reaching a closing
-        /// parenthesis.
-        /// </summary>
-        [TestMethod]
-        public void Evaluate10()
-        {
-            Formula f = new Formula("(3 + 7) / (4 + 6)");
-            Assert.AreEqual(1, f.Evaluate(v => 0));
-        }
-
-        /// <summary>
-        /// Ensures that the Evaluate method can handle multiplication of two
-        /// adjacent variables.
-        /// </summary>
-        [TestMethod]
-        public void Evaluate11()
-        {
-            Formula f = new Formula(" x * y");
-            Assert.AreEqual(24, f.Evaluate(Lookup4));
-        }
-
-        /// <summary>
-        /// The big daddy of a formula. A stress test for the Evaluate method.
-        /// </summary>
-        [TestMethod]
-        public void Evaluate12()
-        {
-            StringBuilder sb = new StringBuilder("", 20_000);
-            for (int i = 1; i <= 9_999; i++)
-            {
-                sb.Append(i + "+");
-            }
-            String s = sb.ToString() + 10_000;
-            Formula f = new Formula(s);
-            Assert.AreEqual(50_005_000, f.Evaluate(Lookup4));
         }
 
         /// <summary>

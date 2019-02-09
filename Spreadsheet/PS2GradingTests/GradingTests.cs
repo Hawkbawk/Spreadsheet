@@ -15,62 +15,6 @@ namespace Formulas
 
         [TestMethod()]
         [ExpectedException(typeof(FormulaFormatException))]
-        public void Test2()
-        {
-            Formula f = new Formula("((2 + 5))) + 8");
-        }
-
-        [TestMethod()]
-        [ExpectedException(typeof(FormulaFormatException))]
-        public void Test3()
-        {
-            Formula f = new Formula("2+5*8)");
-        }
-
-        [TestMethod()]
-        [ExpectedException(typeof(FormulaFormatException))]
-        public void Test4()
-        {
-            Formula f = new Formula("((3+5*7)");
-        }
-
-        [TestMethod()]
-        [ExpectedException(typeof(FormulaFormatException))]
-        public void Test5()
-        {
-            Formula f = new Formula("+3");
-        }
-
-        [TestMethod()]
-        [ExpectedException(typeof(FormulaFormatException))]
-        public void Test6()
-        {
-            Formula f = new Formula("-y");
-        }
-
-        [TestMethod()]
-        [ExpectedException(typeof(FormulaFormatException))]
-        public void Test7()
-        {
-            Formula f = new Formula("*7");
-        }
-
-        [TestMethod()]
-        [ExpectedException(typeof(FormulaFormatException))]
-        public void Test8()
-        {
-            Formula f = new Formula("/z2x");
-        }
-
-        [TestMethod()]
-        [ExpectedException(typeof(FormulaFormatException))]
-        public void Test9()
-        {
-            Formula f = new Formula(")");
-        }
-
-        [TestMethod()]
-        [ExpectedException(typeof(FormulaFormatException))]
         public void Test10()
         {
             Formula f = new Formula("(*5)");
@@ -160,6 +104,13 @@ namespace Formulas
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Test2()
+        {
+            Formula f = new Formula("((2 + 5))) + 8");
+        }
+
+        [TestMethod()]
         [ExpectedException(typeof(FormulaEvaluationException))]
         public void Test20()
         {
@@ -246,6 +197,13 @@ namespace Formulas
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Test3()
+        {
+            Formula f = new Formula("2+5*8)");
+        }
+
+        [TestMethod()]
         public void Test30()
         {
             Formula f = new Formula("((((((((((((3))))))))))))");
@@ -324,6 +282,13 @@ namespace Formulas
         }
 
         [TestMethod()]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Test4()
+        {
+            Formula f = new Formula("((3+5*7)");
+        }
+
+        [TestMethod()]
         public void Test40()
         {
             Test36();
@@ -362,6 +327,41 @@ namespace Formulas
         public void Test45()
         {
             Test41();
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Test5()
+        {
+            Formula f = new Formula("+3");
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Test6()
+        {
+            Formula f = new Formula("-y");
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Test7()
+        {
+            Formula f = new Formula("*7");
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Test8()
+        {
+            Formula f = new Formula("/z2x");
+        }
+
+        [TestMethod()]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void Test9()
+        {
+            Formula f = new Formula(")");
         }
     }
 }
