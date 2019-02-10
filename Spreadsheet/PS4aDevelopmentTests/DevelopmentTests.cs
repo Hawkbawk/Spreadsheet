@@ -7,6 +7,21 @@ namespace PS4aDevelopmentTests
     [TestClass]
     public class DevelopmentTests
     {
+        /// <summary>
+        /// Asserts that you can't pass any null parameters to the new
+        /// Constructor.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentNullException))]
+        public void FirstNullParameter()
+        {
+            Formula f = new Formula(null, s => s, s => true);
+        }
+
+        /// <summary>
+        /// Asserts that we are obtaining the right variables when accessing the
+        /// GetVariables method.
+        /// </summary>
         [TestMethod]
         public void GetVars3()
         {
@@ -21,6 +36,9 @@ namespace PS4aDevelopmentTests
             Assert.IsTrue(expected.SetEquals(actual));
         }
 
+        /// <summary>
+        /// Asserts that the set aspect of the GetVariables is working correctly.
+        /// </summary>
         [TestMethod]
         public void GetVars4()
         {
@@ -31,13 +49,65 @@ namespace PS4aDevelopmentTests
             Assert.IsTrue(expected.SetEquals(actual));
         }
 
+        /// <summary>
+        /// Asserts that the formula doesn't allow for invalid formats from the
+        /// normalizer.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(FormulaFormatException))]
+        public void InvalidNormalizer()
+        {
+            Formula f = new Formula("x + y", s => "x67^", s => true);
+        }
+
+        /// <summary>
+        /// Asserts that a null lookup method throws the right exception.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentNullException))]
+        public void NullLookup()
+        {
+            Formula f = new Formula("x + y + 123663377");
+            f.Evaluate(null);
+        }
+
+        /// <summary>
+        /// Asserts that you can't pass any null parameters to the new
+        /// Constructor.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentNullException))]
+        public void SecondNullParameter()
+        {
+            Formula f = new Formula("x + y", null, s => true);
+        }
+
+        /// <summary>
+        /// Asserts that you can't pass any null parameters to the new
+        /// Constructor.
+        /// </summary>
+        [TestMethod]
+        [ExpectedException(typeof(System.ArgumentNullException))]
+        public void ThirdNullParameter()
+        {
+            Formula f = new Formula("x + y", s => s, null);
+        }
+
+        /// <summary>
+        /// Checks to see if the normalizer is actually being used.
+        /// </summary>
         [TestMethod]
         [ExpectedException(typeof(FormulaFormatException))]
         public void ThreeArg4()
         {
             Formula f = new Formula("x+y", s => s == "x" ? "z" : s, s => s != "z");
+            Assert.AreEqual("z+y", f.ToString());
         }
 
+        /// <summary>
+        /// Asserts that the formula is replacing the variables according to the
+        /// normalizer.
+        /// </summary>
         [TestMethod]
         public void ThreeArg7()
         {
@@ -45,6 +115,9 @@ namespace PS4aDevelopmentTests
             Assert.AreEqual(1.0, f.Evaluate(s => (s == "x") ? 1 : 0), 1e-6);
         }
 
+        /// <summary>
+        /// Checks to see that the ToString method is performing as expected.
+        /// </summary>
         [TestMethod]
         public void ToString1()
         {
@@ -53,6 +126,9 @@ namespace PS4aDevelopmentTests
             Assert.AreEqual(f1.ToString(), f2.ToString());
         }
 
+        /// <summary>
+        /// Asserts that the ToString method is allow for proper evaluation.
+        /// </summary>
         [TestMethod]
         public void ToString4()
         {

@@ -159,7 +159,7 @@ namespace Formulas
                 }
                 if (!v(currentVar.Text))
                 {
-                    throw new FormulaFormatException("Your Validator says that you have an invalid Normalizer");
+                    throw new FormulaFormatException("At least one of your variables isn't valid!");
                 }
                 storedFormula.Add(currentVar);
                 normalizedVars.Add(currentVar.Text);
