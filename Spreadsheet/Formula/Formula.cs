@@ -896,7 +896,7 @@ namespace Formulas
 
     public delegate bool Validator(string s);
 
-    public struct Token
+    internal struct Token
     {
         public string Text { get; set; }
 
