@@ -17,7 +17,7 @@ namespace SS
         /// <summary>
         /// A collection of all the cells in the spreadsheet.
         /// </summary>
-        private Dictionary<string, object> cells;
+        private Dictionary<string, Cell> cells;
 
         /// <summary>
         /// A collection of all dependencies in the current spreadsheet.
@@ -32,7 +32,7 @@ namespace SS
         /// </summary>
         public Spreadsheet()
         {
-            cells = new Dictionary<string, object>();
+            cells = new Dictionary<string, Cell>();
             dependencies = new DependencyGraph();
         }
 
@@ -47,11 +47,12 @@ namespace SS
             {
                 throw new InvalidNameException();
             }
-            if (!cells.TryGetValue(name, out object contents))
+
+            if (!cells.TryGetValue(name, out Cell contents))
             {
                 return "";
             }
-            return contents;
+            return contents.cellContents;
         }
 
         /// <summary>
@@ -65,7 +66,7 @@ namespace SS
             List<string> nonEmptyCells = new List<string>(cells.Count);
             foreach (var cell in cells)
             {
-                if (!cell.Value.Equals(""))
+                if (!cell.Value.cellContents.Equals(""))
                 {
                     nonEmptyCells.Add(cell.Key);
                 }
@@ -94,7 +95,7 @@ namespace SS
         /// </returns>
         public override ISet<string> SetCellContents(string name, double number)
         {
-            return SetCellContentsGeneric(name, number);
+            return SetCellContentsGeneric(name, new Cell(number, number));
         }
 
         /// <summary>
@@ -124,7 +125,7 @@ namespace SS
             {
                 throw new ArgumentNullException();
             }
-            return SetCellContentsGeneric(name, text);
+            return SetCellContentsGeneric(name, new Cell(text, text));
         }
 
         /// <summary>
@@ -161,8 +162,7 @@ namespace SS
             {
                 dependencies.AddDependency(name, s);
             }
-
-            return SetCellContentsGeneric(name, formula);
+            return SetCellContentsGeneric(name, new Cell(formula, null));
         }
 
         /// <summary>
@@ -191,10 +191,6 @@ namespace SS
         /// </returns>
         protected override IEnumerable<string> GetDirectDependents(string name)
         {
-            if (!IsValidCellName(name))
-            {
-                throw new InvalidNameException();
-            }
             return dependencies.GetDependents(name);
         }
 
@@ -228,7 +224,7 @@ namespace SS
         /// <returns>
         /// Returns a set of all cells that now depend on the passed in cell.
         /// </returns>
-        private ISet<string> SetCellContentsGeneric(string name, object o)
+        private ISet<string> SetCellContentsGeneric(string name, Cell o)
         {
             if (name == null || !IsValidCellName(name))
             {
@@ -241,6 +237,18 @@ namespace SS
                 dependents.Add(s);
             }
             return dependents;
+        }
+
+        internal struct Cell
+        {
+            internal object cellContents { get; set; }
+            internal object cellValue { get; set; }
+
+            internal Cell(object _cellContents, object _cellValue)
+            {
+                cellContents = _cellContents;
+                cellValue = _cellValue;
+            }
         }
     }
 }
