@@ -191,7 +191,7 @@ namespace SS
         /// </returns>
         protected override IEnumerable<string> GetDirectDependents(string name)
         {
-            return dependencies.GetDependents(name);
+            return dependencies.GetDependees(name);
         }
 
         /// <summary>
@@ -230,12 +230,12 @@ namespace SS
             {
                 throw new InvalidNameException();
             }
-            cells[name] = o;
             HashSet<string> dependents = new HashSet<string>();
             foreach (string s in GetCellsToRecalculate(name))
             {
                 dependents.Add(s);
             }
+            cells[name] = o;
             return dependents;
         }
 
