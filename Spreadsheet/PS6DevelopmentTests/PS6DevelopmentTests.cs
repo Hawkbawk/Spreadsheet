@@ -87,6 +87,77 @@ namespace DevelopmentTests
 
         }
 
+        [TestMethod, Timeout(3000)]
+        public void StressTest1()
+        {
+            Spreadsheet s = new Spreadsheet();
+            s.SetContentsOfCell("a1", "=b1");
+            s.SetContentsOfCell("b1", "=c1");
+            s.SetContentsOfCell("c1", "=d1");
+            s.SetContentsOfCell("d1", "=e1");
+            s.SetContentsOfCell("e1", "=f1");
+            s.SetContentsOfCell("f1", "=g1");
+            s.SetContentsOfCell("g1", "=h1");
+            s.SetContentsOfCell("h1", "=i1");
+            s.SetContentsOfCell("i1", "=j1");
+            s.SetContentsOfCell("j1", "=k1");
+            s.SetContentsOfCell("k1", "=l1");
+            s.SetContentsOfCell("l1", "=m1");
+            s.SetContentsOfCell("m1", "5");
+            Assert.AreEqual(5.0, s.GetCellValue("a1"));
+
+        }
+
+        [TestMethod, Timeout(3000)]
+        public void StressTest2()
+        {
+            Spreadsheet s = new Spreadsheet();
+            for(int i = 1; i < 800; i++)
+            {
+                s.SetContentsOfCell("a" + i, "=a" + (i + 1));
+            }
+            s.SetContentsOfCell("a800", "1");
+            Assert.AreEqual(1.0, s.GetCellValue("a1"));
+        }
+
+        [TestMethod, Timeout(5000)]
+        public void StressTest3()
+        {
+            Spreadsheet s = new Spreadsheet();
+            for (int i = 1; i < 500; i++)
+            {
+                s.SetContentsOfCell("a" + i, "=a" + (i + 1));
+            }
+            s.SetContentsOfCell("a500", "1");
+            for (int i = 1; i < 500; i++)
+            {
+                Assert.AreEqual(1.0, s.GetCellValue("a" + i));
+            }
+        }
+
+        /// <summary>
+        /// Add a bunch of random things to the spreadsheet and see how long it takes.
+        /// </summary>
+        [TestMethod, Timeout(3000)]
+        public void StressTest4()
+        {
+            Spreadsheet s = new Spreadsheet();
+            Random r = new Random();
+            List<double> numbers = new List<double>();
+            numbers.Add(0);
+            for (int i = 1; i < 800; i++)
+            {
+                int result = r.Next();
+                s.SetContentsOfCell("a" + i, "" + result);
+                numbers.Add(result);
+            }
+            for (int i = 1; i < 800; i++)
+            {
+                Assert.AreEqual(numbers[i], s.GetCellValue("a" + i));
+
+            }
+        }
+
         [TestMethod()]
         public void OneNumber()
         {
@@ -114,6 +185,52 @@ namespace DevelopmentTests
             Assert.IsTrue(ss.Changed);
         }
 
+        [TestMethod]
+        public void GetCellContents()
+        {
+            Spreadsheet s = new Spreadsheet();
+            s.SetContentsOfCell("a1", "Hello World!");
+            Assert.AreEqual("Hello World!", s.GetCellContents("a1"));
+        }
+
+        [TestMethod]
+        public void GetCellContentsEmptyCell()
+        {
+            Spreadsheet s = new Spreadsheet();
+            Assert.AreEqual("", s.GetCellContents("v9875"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void GetCellContentsNull()
+        {
+            Spreadsheet s = new Spreadsheet();
+            s.GetCellContents(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(InvalidNameException))]
+        public void GetCellValuesNull()
+        {
+            Spreadsheet s = new Spreadsheet();
+            s.GetCellValue(null);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException))]
+        public void SetToNullContents()
+        {
+            Spreadsheet s = new Spreadsheet();
+            s.SetContentsOfCell("a4", null);
+        }    
+        
+        [TestMethod]
+        public void SetToEmptyString()
+        {
+            Spreadsheet s = new Spreadsheet();
+            s.SetContentsOfCell("a1", "");
+            Assert.AreEqual("", s.GetCellContents("a1"));
+        }
         [TestMethod()]
         public void DivisionByZero1()
         {
@@ -140,6 +257,57 @@ namespace DevelopmentTests
             Set(ss, "A1", "4.1");
             Set(ss, "C1", "= A1 + 4.2");
             VV(ss, "C1", 8.3);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(SpreadsheetReadException))]
+        public void ReadInvalidXML()
+        {
+            StreamReader name = new StreamReader("InvalidXML.xml");
+            Spreadsheet s = new Spreadsheet(name, new Regex(@"^.*$"));
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(SpreadsheetVersionException))]
+        public void InvalidVersionCheck()
+        {
+            StringWriter sw = new StringWriter();
+            using (XmlWriter writer = XmlWriter.Create(sw))
+            {
+                writer.WriteStartDocument();
+                writer.WriteStartElement("spreadsheet");
+                writer.WriteAttributeString("IsValid", "^.*$");
+
+                writer.WriteStartElement("cell");
+                writer.WriteAttributeString("name", "A1");
+                writer.WriteAttributeString("contents", "hello");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("cell");
+                writer.WriteAttributeString("name", "A2");
+                writer.WriteAttributeString("contents", "5.0");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("cell");
+                writer.WriteAttributeString("name", "A3");
+                writer.WriteAttributeString("contents", "4.0");
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("cell");
+                writer.WriteAttributeString("name", "A4");
+                writer.WriteAttributeString("contents", "= A2 + A3");
+                writer.WriteEndElement();
+
+                writer.WriteEndElement();
+                writer.WriteEndDocument();
+            }
+            AbstractSpreadsheet ss = new Spreadsheet(new StringReader(sw.ToString()), new Regex(@"^[b-zB-Z]\d&"));
+        }
+        [TestMethod]
+        public void ReadValidXML()
+        {
+            StreamReader name = new StreamReader("SaveTest3.xml");
+            Spreadsheet s = new Spreadsheet(name, new Regex(@"^.*$"));
         }
 
         [TestMethod()]
@@ -180,6 +348,8 @@ namespace DevelopmentTests
             ss.Save(path);
             VV(ss, "A1", "hello", "A2", 5.0, "A3", 4.0, "A4", 9.0);
         }
+
+
 
         [TestMethod()]
         public void SaveTest4()

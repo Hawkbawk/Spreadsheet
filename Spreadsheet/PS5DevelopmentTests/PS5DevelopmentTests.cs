@@ -19,7 +19,7 @@ namespace DevelopmentTests
         public void CheckingForReferencePassing1()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents("t1", "Hello world!");
+            s.SetContentsOfCell("t1", "Hello world!");
             var tester = s.GetCellContents("t1");
             tester = "I've been changed!";
             Assert.AreEqual("Hello world!", s.GetCellContents("t1"));
@@ -34,7 +34,7 @@ namespace DevelopmentTests
         {
             AbstractSpreadsheet s = new Spreadsheet();
             Formula f = new Formula("9 + 7");
-            s.SetCellContents("t1", f);
+            s.SetContentsOfCell("t1", "f");
             var tester = s.GetCellContents("t1");
             tester = new Formula("123 + 17");
             Assert.AreNotEqual(f.ToString(), tester.ToString());
@@ -50,9 +50,9 @@ namespace DevelopmentTests
         public void CheckingForReferencePassing3()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents("t1", "Hello world!");
+            s.SetContentsOfCell("t1", "Hello world!");
             var tester = s.GetCellContents("t1");
-            s.SetCellContents("t1", "I've been changed");
+            s.SetContentsOfCell("t1", "I've been changed");
             Assert.AreNotEqual(tester, s.GetCellContents("t1"));
         }
 
@@ -73,7 +73,7 @@ namespace DevelopmentTests
         public void InvalidNameSetTest1()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents("st5t", 5);
+            s.SetContentsOfCell("st5t", "5");
         }
 
         /// <summary>
@@ -84,8 +84,8 @@ namespace DevelopmentTests
         public void InvalidNameSetTest2()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents("a4", "");
-            s.SetCellContents("a%", "asdffj;l");
+            s.SetContentsOfCell("a4", "");
+            s.SetContentsOfCell("a%", "asdffj;l");
         }
 
         [TestMethod]
@@ -93,7 +93,7 @@ namespace DevelopmentTests
         public void InvalidNameSetTest3()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents("st5t", new Formula("9 + 182"));
+            s.SetContentsOfCell("st5t", "9 + 182");
         }
 
         /// <summary>
@@ -103,14 +103,14 @@ namespace DevelopmentTests
         public void NonEmptyCellTest()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents("t1", "");
-            s.SetCellContents("t2", "a");
-            s.SetCellContents("t3", 4567);
-            s.SetCellContents("t4", new Formula("4 + 17 - 92 / 4"));
+            s.SetContentsOfCell("t1", "");
+            s.SetContentsOfCell("t2", "a");
+            s.SetContentsOfCell("t3", "4567");
+            s.SetContentsOfCell("t4", "4 + 17 - 92 / 4");
             var expected = new HashSet<string>();
-            expected.Add("t2");
-            expected.Add("t3");
-            expected.Add("t4");
+            expected.Add("T2");
+            expected.Add("T3");
+            expected.Add("T4");
             Assert.IsTrue(expected.SetEquals(s.GetNamesOfAllNonemptyCells()));
         }
 
@@ -127,7 +127,7 @@ namespace DevelopmentTests
         public void NullSetTest1()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents(null, 5);
+            s.SetContentsOfCell(null, "5");
         }
 
         [TestMethod]
@@ -135,7 +135,7 @@ namespace DevelopmentTests
         public void NullSetTest2()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents(null, " ");
+            s.SetContentsOfCell(null, " ");
         }
 
         [TestMethod]
@@ -143,7 +143,7 @@ namespace DevelopmentTests
         public void NullSetTest3()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents(null, new Formula("9"));
+            s.SetContentsOfCell(null, "9");
         }
 
         // SETTING CELL TO A STRING
@@ -151,7 +151,7 @@ namespace DevelopmentTests
         public void Test10()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents("Z7", "hello");
+            s.SetContentsOfCell("Z7", "hello");
             Assert.AreEqual("hello", s.GetCellContents("Z7"));
         }
 
@@ -160,7 +160,7 @@ namespace DevelopmentTests
         public void Test13()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents("Z7", new Formula("3"));
+            s.SetContentsOfCell("Z7", "=3");
             Formula f = (Formula)s.GetCellContents("Z7");
             Assert.AreEqual(3, f.Evaluate(x => 0), 1e-6);
         }
@@ -171,8 +171,8 @@ namespace DevelopmentTests
         public void Test14()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents("A1", new Formula("A2"));
-            s.SetCellContents("A2", new Formula("A1"));
+            s.SetContentsOfCell("A1", "=A2");
+            s.SetContentsOfCell("A2", "=A1");
         }
 
         // EMPTY SPREADSHEETS
@@ -188,7 +188,7 @@ namespace DevelopmentTests
         public void Test6()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetCellContents("Z7", 1.5);
+            s.SetContentsOfCell("Z7", "1.5");
             Assert.AreEqual(1.5, (double)s.GetCellContents("Z7"), 1e-9);
         }
 
@@ -196,7 +196,7 @@ namespace DevelopmentTests
         public void TestDirectDependents()
         {
             var s = new Spreadsheet();
-            s.SetCellContents("b1", new Formula("a1 + b3 - c7"));
+            s.SetContentsOfCell("b1", "a1 + b3 - c7");
         }
     }
 }
