@@ -786,7 +786,10 @@ namespace Formulas
                 }
                 // Get rid of the operator, cause we're using it.
                 operators.Pop();
-
+                if (result == 0)
+                {
+                    throw new FormulaEvaluationException("Division by zero isn't allowed!");
+                }
                 result = leftOperand / result;
             }
             // Regardless of whether we've done any math, push the result on to
