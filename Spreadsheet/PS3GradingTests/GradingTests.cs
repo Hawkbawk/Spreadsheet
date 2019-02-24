@@ -1,14 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Dependencies;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Dependencies;
+using System;
+using System.Collections.Generic;
 
 namespace GradingTests
 {
     [TestClass]
     public class GradingTests
     {
-
         /// <summary>
         ///This is a test class for DependencyGraphTest and is intended
         ///to contain all DependencyGraphTest Unit Tests
@@ -70,7 +69,6 @@ namespace GradingTests
                 t.ReplaceDependents("x", new HashSet<string>());
                 t.ReplaceDependees("y", new HashSet<string>());
             }
-
 
             // ************************ MORE TESTS ON EMPTY DGs *********************** //
 
@@ -147,7 +145,6 @@ namespace GradingTests
                 t.ReplaceDependents("x", new HashSet<string>());
                 t.ReplaceDependees("y", new HashSet<string>());
             }
-
 
             // ********************** Making Sure that Static Variables Weren't Used ****************** //
             ///<summary>
@@ -634,7 +631,6 @@ namespace GradingTests
                 Assert.IsFalse(e.MoveNext());
             }
 
-
             // ************************** STRESS TESTS REPEATED MULTIPLE TIMES ******************************** //
             /// <summary>
             ///Using lots of data
@@ -719,22 +715,24 @@ namespace GradingTests
             {
                 StressTest1();
             }
+
             [TestMethod, Timeout(5000)]
             public void StressTest3()
             {
                 StressTest1();
             }
+
             [TestMethod, Timeout(5000)]
             public void StressTest4()
             {
                 StressTest1();
             }
+
             [TestMethod, Timeout(5000)]
             public void StressTest5()
             {
                 StressTest1();
             }
-
 
             // ********************************** ANOTHER STESS TEST, REPEATED ******************** //
             /// <summary>
@@ -821,22 +819,24 @@ namespace GradingTests
             {
                 StressTest8();
             }
+
             [TestMethod, Timeout(10000)]
             public void StressTest10()
             {
                 StressTest8();
             }
+
             [TestMethod, Timeout(10000)]
             public void StressTest11()
             {
                 StressTest8();
             }
+
             [TestMethod, Timeout(10000)]
             public void StressTest12()
             {
                 StressTest8();
             }
-
 
             // ********************************** A THIRD STESS TEST, REPEATED ******************** //
             /// <summary>
@@ -923,16 +923,19 @@ namespace GradingTests
             {
                 StressTest15();
             }
+
             [TestMethod, Timeout(15000)]
             public void StressTest17()
             {
                 StressTest15();
             }
+
             [TestMethod, Timeout(15000)]
             public void StressTest18()
             {
                 StressTest15();
             }
+
             [TestMethod, Timeout(15000)]
             public void StressTest19()
             {
@@ -941,4 +944,3 @@ namespace GradingTests
         }
     }
 }
-

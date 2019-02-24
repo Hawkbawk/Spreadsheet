@@ -1,8 +1,8 @@
-﻿using SS;
+﻿using Formulas;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using SS;
 using System;
 using System.Collections.Generic;
-using Formulas;
 
 namespace GradingTests
 {
@@ -331,16 +331,19 @@ namespace GradingTests
             ISet<String> cells = s.SetCellContents("E1", 0);
             AssertSetEqualsIgnoreCase(new HashSet<string>() { "A1", "B1", "B2", "C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1" }, cells);
         }
+
         [TestMethod, Timeout(3000)]
         public void Test32()
         {
             Test31();
         }
+
         [TestMethod, Timeout(3000)]
         public void Test33()
         {
             Test31();
         }
+
         [TestMethod, Timeout(3000)]
         public void Test34()
         {
@@ -358,21 +361,25 @@ namespace GradingTests
                 AssertSetEqualsIgnoreCase(cells, s.SetCellContents("A" + i, new Formula("A" + (i + 1))));
             }
         }
+
         [TestMethod, Timeout(3000)]
         public void Test36()
         {
             Test35();
         }
+
         [TestMethod, Timeout(3000)]
         public void Test37()
         {
             Test35();
         }
+
         [TestMethod, Timeout(3000)]
         public void Test38()
         {
             Test35();
         }
+
         [TestMethod, Timeout(3000)]
         public void Test39()
         {
@@ -390,16 +397,19 @@ namespace GradingTests
             {
             }
         }
+
         [TestMethod, Timeout(3000)]
         public void Test40()
         {
             Test39();
         }
+
         [TestMethod, Timeout(3000)]
         public void Test41()
         {
             Test39();
         }
+
         [TestMethod, Timeout(3000)]
         public void Test42()
         {
@@ -428,8 +438,6 @@ namespace GradingTests
             {
                 Assert.IsTrue(sss.Contains("A1" + i) || sss.Contains("a1" + i));
             }
-
-
         }
 
         [TestMethod, Timeout(3000)]
@@ -437,11 +445,13 @@ namespace GradingTests
         {
             Test43();
         }
+
         [TestMethod, Timeout(3000)]
         public void Test45()
         {
             Test43();
         }
+
         [TestMethod, Timeout(3000)]
         public void Test46()
         {
@@ -453,16 +463,19 @@ namespace GradingTests
         {
             RunRandomizedTest(47, 2519);
         }
+
         [TestMethod, Timeout(3000)]
         public void Test48()
         {
             RunRandomizedTest(48, 2521);
         }
+
         [TestMethod, Timeout(3000)]
         public void Test49()
         {
             RunRandomizedTest(49, 2526);
         }
+
         [TestMethod, Timeout(3000)]
         public void Test50()
         {
@@ -482,9 +495,11 @@ namespace GradingTests
                         case 0:
                             s.SetCellContents(randomName(rand), 3.14);
                             break;
+
                         case 1:
                             s.SetCellContents(randomName(rand), "hello");
                             break;
+
                         case 2:
                             s.SetCellContents(randomName(rand), randomFormula(rand));
                             break;
@@ -513,12 +528,15 @@ namespace GradingTests
                     case 0:
                         f += "+";
                         break;
+
                     case 1:
                         f += "-";
                         break;
+
                     case 2:
                         f += "*";
                         break;
+
                     case 3:
                         f += "/";
                         break;
@@ -528,6 +546,7 @@ namespace GradingTests
                     case 0:
                         f += 7.2;
                         break;
+
                     case 1:
                         f += randomName(rand);
                         break;
@@ -535,6 +554,5 @@ namespace GradingTests
             }
             return f;
         }
-
     }
 }

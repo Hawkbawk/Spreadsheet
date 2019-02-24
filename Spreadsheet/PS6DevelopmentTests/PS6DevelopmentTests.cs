@@ -1,11 +1,10 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System.Collections.Generic;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using SS;
-using System.Text.RegularExpressions;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Xml;
-using System.Threading.Tasks;
 
 namespace DevelopmentTests
 {
@@ -68,6 +67,26 @@ namespace DevelopmentTests
             VV(ss, "A1", "");
         }
 
+        [TestMethod]
+        public void ValuesUpdatingCorrectly()
+        {
+            Spreadsheet s = new Spreadsheet();
+            s.SetContentsOfCell("a1", "=b1 + c1");
+            s.SetContentsOfCell("b1", "5");
+            s.SetContentsOfCell("c1", "=b1 * d1");
+            s.SetContentsOfCell("d1", "10");
+            Assert.AreEqual(55.0, s.GetCellValue("a1"));
+            Assert.AreEqual(5.0, s.GetCellValue("b1"));
+            Assert.AreEqual(50.0, s.GetCellValue("c1"));
+            Assert.AreEqual(10.0, s.GetCellValue("d1"));
+            s.SetContentsOfCell("d1", "0");
+            Assert.AreEqual(5.0, s.GetCellValue("a1"));
+            Assert.AreEqual(5.0, s.GetCellValue("b1"));
+            Assert.AreEqual(0.0, s.GetCellValue("c1"));
+            Assert.AreEqual(0.0, s.GetCellValue("d1"));
+
+        }
+
         [TestMethod()]
         public void OneNumber()
         {
@@ -94,7 +113,6 @@ namespace DevelopmentTests
             Set(ss, "C1", "17.5");
             Assert.IsTrue(ss.Changed);
         }
-
 
         [TestMethod()]
         public void DivisionByZero1()
@@ -158,6 +176,8 @@ namespace DevelopmentTests
                 writer.WriteEndDocument();
             }
             AbstractSpreadsheet ss = new Spreadsheet(new StringReader(sw.ToString()), new Regex(""));
+            StreamWriter path = new StreamWriter("SaveTest3.xml");
+            ss.Save(path);
             VV(ss, "A1", "hello", "A2", 5.0, "A3", 4.0, "A4", 9.0);
         }
 
@@ -171,6 +191,9 @@ namespace DevelopmentTests
             Set(ss, "A4", "= A2 + A3");
             StringWriter sw = new StringWriter();
             ss.Save(sw);
+            StreamWriter path = new StreamWriter("SaveTest4.xml");
+            ss.Save(path);
+
 
             using (XmlReader reader = XmlReader.Create(new StringReader(sw.ToString())))
             {

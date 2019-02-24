@@ -222,35 +222,35 @@ namespace Formulas
         public void Test32()
         {
             Formula f = new Formula("y*3-8/2+4*(8-9*2)/14*x");
-            Assert.AreEqual(5.14285714285714, (double)f.Evaluate(s => (s == "x") ? 1 : 4), 1e-9);
+            Assert.AreEqual(5.14285714285714, f.Evaluate(s => (s == "x") ? 1 : 4), 1e-9);
         }
 
         [TestMethod()]
         public void Test32a()
         {
             Formula f = new Formula("a + b * c - d + 3 * 3.0 - 3.0e0 / 0.003e3");
-            Assert.AreEqual(17, (double)f.Evaluate(s => 3), 1e-9);
+            Assert.AreEqual(17, f.Evaluate(s => 3), 1e-9);
         }
 
         [TestMethod()]
         public void Test33()
         {
             Formula f = new Formula("a+(b+(c+(d+(e+f))))");
-            Assert.AreEqual(6, (double)f.Evaluate(s => 1), 1e-9);
+            Assert.AreEqual(6, f.Evaluate(s => 1), 1e-9);
         }
 
         [TestMethod()]
         public void Test34()
         {
             Formula f = new Formula("((((x1+x2)+x3)+x4)+x5)+x6");
-            Assert.AreEqual(12, (double)f.Evaluate(s => 2), 1e-9);
+            Assert.AreEqual(12, f.Evaluate(s => 2), 1e-9);
         }
 
         [TestMethod()]
         public void Test35()
         {
             Formula f = new Formula("a-a*a/a");
-            Assert.AreEqual(0, (double)f.Evaluate(s => 3), 1e-9);
+            Assert.AreEqual(0, f.Evaluate(s => 3), 1e-9);
         }
 
         // Tests to make sure there can be more than one formula at a time
