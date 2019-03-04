@@ -14,6 +14,7 @@ namespace SS
     /// (an extremely basic) Excel spreadsheet. Currently doesn't support
     /// actually obtaining values for a formula, but does allows for pulling out
     /// the contents of any given valid cell.
+    /// Hello world!
     /// </summary>
     public class Spreadsheet : AbstractSpreadsheet
     {
