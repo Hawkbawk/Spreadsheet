@@ -126,11 +126,13 @@ namespace SS
                                 reader.MoveToNextAttribute();
                                 string cellName = reader.Value;
                                 // Check to see if the cell name is valid according to both validators.
-                                if (!IsValidCellName(cellName, oldIsValid))
+                                IsValid = oldIsValid;
+                                if (!IsValidCellName(cellName))
                                 {
                                     throw new SpreadsheetReadException("The cell names provided don't match the old regex!");
                                 }
-                                if (!IsValidCellName(cellName, newIsValid))
+                                IsValid = newIsValid;
+                                if (!IsValidCellName(cellName))
                                 {
                                     throw new SpreadsheetVersionException("The cell names provided don't match the new regex!");
                                 }
@@ -177,7 +179,7 @@ namespace SS
         public override object GetCellContents(string name)
         {
             // Checks to see if name is non-null and valid.
-            if (name == null || !IsValidCellName(name, IsValid))
+            if (name == null || !IsValidCellName(name))
             {
                 throw new InvalidNameException();
             }
@@ -197,7 +199,7 @@ namespace SS
         /// <returns>The value associated with the passed in cell</returns>
         public override object GetCellValue(string name)
         {
-            if (name == null || !IsValidCellName(name, IsValid))
+            if (name == null || !IsValidCellName(name))
             {
                 throw new InvalidNameException();
             }
@@ -205,33 +207,6 @@ namespace SS
             {
                 return "";
             }
-            // Obtain the current cell we're working with from the Dictionary of cell.
-            // Check to see if it's a formula or a double.
-            if (cell.cellContents is Formula)
-            {
-                // Cast to a Formula
-                Formula f = cell.cellContents as Formula;
-                object result;
-                // Try and Evaluate that Formula with the new values in the cells.
-                try
-                {
-                    result = f.Evaluate(EvalLookup);
-                }
-                // Put a FormulaError if the formula can't be evaluated now.
-                catch (FormulaEvaluationException e)
-                {
-                    result = new FormulaError(e.Message);
-                }
-                // Update the value for our current cell.
-                cell.cellValue = result;
-            }
-            else if (cell.cellContents is double)
-            {
-                // Update the value for our cell if it's contents have changed.
-                cell.cellValue = cell.cellContents;
-            }
-            // Store the updated currentCell back in the Dictionary.
-            cells[name] = cell;
             return cell.cellValue;
         }
 
@@ -368,7 +343,7 @@ namespace SS
         /// <param name="formula">The desired contents for the cell.</param>
         /// <returns>Returns a set of all cells that now depend on the provided cell.</returns>
         protected override ISet<string> SetCellContents(string name, Formula formula)
-        { 
+        {
             // Add in all of our new dependencies.
             foreach (string s in formula.GetVariables())
             {
@@ -428,7 +403,7 @@ namespace SS
                 throw new ArgumentNullException();
             }
             // Check to see if the name is null or invalid.
-            if (name == null || !IsValidCellName(name, IsValid))
+            if (name == null || !IsValidCellName(name))
             {
                 throw new InvalidNameException();
             }
@@ -447,7 +422,7 @@ namespace SS
             if (content[0] == '=')
             {
                 string formula = content.Substring(1).ToUpper();
-                return SetCellContents(name.ToUpper(), new Formula(formula, s => s.ToUpper(), Validate));
+                return SetCellContents(name.ToUpper(), new Formula(formula, s => s.ToUpper(), IsValidCellName));
             }
             // Otherwise, just set the contents to simply be the passed in string.
             return SetCellContents(name, content);
@@ -481,14 +456,14 @@ namespace SS
         /// validChecker="validChecker"> Another regex for limiting possible cell names. </param> A
         /// regex expression that determines additional constraints for cell names. </param>
         /// <returns> True if "name" is a valid cell name. False otherwise. </returns>
-        private bool IsValidCellName(String name, Regex additionalRules)
+        private bool IsValidCellName(String name)
         {
             // A pattern that matches only valid strings.
             string pattern = "^[a-zA-Z]+[1-9][0-9]*$";
             Regex r = new Regex(pattern);
             // Check to see if the cell name is valid to our base rules and to the other rules
             // applied by the additional rules Regex.
-            return r.IsMatch(name) && additionalRules.IsMatch(name.ToUpper());
+            return r.IsMatch(name) && IsValid.IsMatch(name.ToUpper());
         }
 
         /// <summary>
@@ -499,20 +474,37 @@ namespace SS
         /// <returns>Returns a set of all cells that now depend on the passed in cell.</returns>
         private ISet<string> SetCellContentsGeneric(string name, Cell o)
         {
-            // Check to see if the name is valid and non-null.
-            if (name == null || !IsValidCellName(name, IsValid))
-            {
-                throw new InvalidNameException();
-            }
             Changed = true;
             HashSet<string> dependents = new HashSet<string>();
+            List<string> tempDependents = new List<string>();
             // Obtain all of the cells that need to be recalculated and check for any circular dependencies.
             foreach (string s in GetCellsToRecalculate(name))
             {
                 dependents.Add(s);
+                tempDependents.Add(s);
             }
             // Store the new cell contents in the Dictionary.
             cells[name.ToUpper()] = o;
+            foreach (string s in tempDependents)
+            {
+                if (!cells.TryGetValue(s, out Cell c))
+                {
+                    continue;
+                }
+                if (c.cellContents is Formula)
+                {
+                    Formula f = c.cellContents as Formula;
+                    try
+                    {
+                        c.cellValue = f.Evaluate(EvalLookup);
+                    }
+                    catch (Exception)
+                    {
+                        c.cellValue = new FormulaError();
+                    }
+                    cells[s] = c;
+                }
+            }
             // Return a set of all cells that depend on the changed cell.
             return dependents;
         }
@@ -535,22 +527,10 @@ namespace SS
                 // Simply return if we've found a double.
                 return (double)value;
             }
-            else if (value is string)
-            {
-                // Can't recalculate with strings, so throw an exception.
-                throw new UndefinedVariableException("Strings aren't allowed in formulas");
-            }
             else
             {
                 throw new UndefinedVariableException("The variable doesn't have a valid definition!");
             }
-        }
-
-        private bool Validate(string name)
-        {
-            string pattern = "^[a-zA-Z]+[1-9][0-9]*$";
-            Regex r = new Regex(pattern);
-            return r.IsMatch(name);
         }
 
         private static void ValidateXML(object sender, ValidationEventArgs e)

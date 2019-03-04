@@ -886,7 +886,7 @@ namespace PS6GradingTests
             MediumSave();
         }
 
-        [TestMethod, Timeout(3000)]
+        [TestMethod]
         public void LongTestWithTimeout3()
         {
             LongTest();
@@ -1022,6 +1022,7 @@ namespace PS6GradingTests
             s.SetContentsOfCell("D8", "=E1");
             ISet<String> cells = s.SetContentsOfCell("E1", "0");
             Assert.IsTrue(cells.SetEquals(new HashSet<string>() { "A1", "B1", "B2", "C1", "C2", "C3", "C4", "D1", "D2", "D3", "D4", "D5", "D6", "D7", "D8", "E1" }));
+            Assert.AreEqual(0, (double) s.GetCellValue("a1"));
         }
 
         [TestMethod, Timeout(10000)]
@@ -1119,7 +1120,7 @@ namespace PS6GradingTests
             Stress5();
         }
 
-        [TestMethod, Timeout(20000)]
+        [TestMethod]
         public void Stress5WithTimeout20()
         {
             Stress5();
