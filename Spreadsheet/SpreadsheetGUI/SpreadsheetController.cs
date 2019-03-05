@@ -34,16 +34,25 @@ namespace SpreadsheetGUI
         {
             window.GetSelection(out int row, out int col);
             string cellName = toCellName(row, col);
-            string cellContents = spreadsheet.GetCellContents(cellName).ToString();
-            window.ChangeTextbox(cellContents);
+            object cellContents = spreadsheet.GetCellContents(cellName);
+            // Check to see if we need to prepend the string with an equals sign cause its a formula.
+            if (cellContents is Formula)
+            {
+                window.ChangeTextbox("=" + cellContents.ToString());
+                return;
+            }
+            // Otherwise just change the text box to the current contents
+            window.ChangeTextbox(cellContents.ToString());
         }
 
         private void HandleChangeContents()
         {
+            // Obtain the name of the currently selected cell and its desired contents.
             window.GetSelection(out int row, out int col);
             string cellName = toCellName(row, col);
             string contents = window.GetDesiredContents();
             ISet<string> dependents = new HashSet<string>();
+            // Try and change the contents of the spreadsheet to the new contents.
             try
             {
                 dependents = spreadsheet.SetContentsOfCell(cellName, contents);
@@ -53,20 +62,27 @@ namespace SpreadsheetGUI
                 if (e is FormulaFormatException)
                 {
                     MessageBox.Show("That's not a valid formula!");
+                    window.ChangeTextbox("");
                 } 
                 else if (e is CircularException)
                 {
                     MessageBox.Show("That formula creates a circular dependency!");
+                    window.ChangeTextbox("");
                 }
                 return;
             }
 
+            // Update all of the cells so they show the correct value
             foreach(string s in dependents)
             {
                 string value = spreadsheet.GetCellValue(s).ToString();
                 toCoordinates(s, out int currentRow, out int currentColumn);
+                // TODO: Decide what should be displayed if the value is a formula error.
                 window.SetValue(currentRow, currentColumn, value);
             }
+
+            // Update the text box to show the correct contents.
+            HandleChangedSelection(window.GetSpreadsheetPanel());
             
         }
 

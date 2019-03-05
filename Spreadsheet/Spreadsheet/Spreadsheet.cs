@@ -362,7 +362,19 @@ namespace SS
                 value = new FormulaError(e.Message);
             }
             // Set the cell contents.
-            return SetCellContentsGeneric(name, new Cell(formula, value));
+            try
+            {
+                return SetCellContentsGeneric(name, new Cell(formula, value));
+
+            }
+            catch (CircularException e)
+            {
+                foreach(string s in formula.GetVariables())
+                {
+                    dependencies.RemoveDependency(name, s);
+                }
+                throw e;
+            }
         }
 
         /// <summary>
