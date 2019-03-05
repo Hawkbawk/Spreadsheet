@@ -25,12 +25,20 @@ namespace SpreadsheetGUI
         public event Action<string> OpenEvent;
         public event Action CloseEvent;
         public event Action ChangeContents;
+        public event Action NewCellSelected;
 
         public SpreadsheetWindow()
         {
             InitializeComponent();
+            spreadsheetPanel1.SelectionChanged += HandleChangedSelection;
             spreadsheetPanel1.SetSelection(0, 0);
 
+        }
+
+
+        private void HandleChangedSelection(SpreadsheetPanel sender)
+        {
+            NewCellSelected();
         }
 
         public string GetDesiredContents()
@@ -78,7 +86,7 @@ namespace SpreadsheetGUI
             MessageBox.Show(helpMessage);
         }
 
-        public void ChangeTextbox(string contents)
+        public void SelectedNewCell(string contents)
         {
             textBox1.Text = contents;
         }

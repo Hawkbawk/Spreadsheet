@@ -27,17 +27,15 @@ namespace SpreadsheetGUI
             window.SaveEvent += HandleSaveEvent;
             window.NewEvent += HandleNewEvent;
             window.ChangeContents += HandleChangeContents;
-            window.GetSpreadsheetPanel().SelectionChanged += HandleChangedSelection;
+            window.NewCellSelected += HandleNewCellSelected;
         }
 
-        private void HandleChangedSelection(SpreadsheetPanel sender)
+        private void HandleNewCellSelected()
         {
-            // Obtain the current cell name.
             window.GetSelection(out int row, out int col);
             string cellName = toCellName(row, col);
-            object cellContents = spreadsheet.GetCellContents(cellName);
-            // Change the textbox to represent the current cell contents.
-            window.ChangeTextbox(cellContents.ToString());
+            object contents = spreadsheet.GetCellContents(cellName);
+            window.SelectedNewCell(contents.ToString());
         }
 
         private void HandleChangeContents()
@@ -75,7 +73,7 @@ namespace SpreadsheetGUI
             }
 
             // Update the text box to show the correct contents.
-            HandleChangedSelection(window.GetSpreadsheetPanel());
+            HandleNewCellSelected();
             
         }
 
