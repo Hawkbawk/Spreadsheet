@@ -1,13 +1,25 @@
-﻿using System;
+﻿using SSGui;
+using System;
 
 namespace SpreadsheetGUI
 {
-    interface ISpreadsheetView
+    public interface ISpreadsheetView
     {
         event Action NewEvent;
-        event Action SaveEvent;
-        event Action OpenEvent;
+        event Action<string> SaveEvent;
+        event Action<string> OpenEvent;
         event Action CloseEvent;
+        event Action ChangeContents;
+        event SelectionChangedHandler SelectionChanged;
+
+
+
+        string GetDesiredContents();
+        void GetValue(int row, int col, out string contents);
+        void SetValue(int row, int col, string content);
+        void GetSelection(out int row, out int col);
+        void SetSelection(int row, int col);
+        void ChangeTextbox(string contents);
 
     }
 }
