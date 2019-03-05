@@ -32,16 +32,11 @@ namespace SpreadsheetGUI
 
         private void HandleChangedSelection(SpreadsheetPanel sender)
         {
+            // Obtain the current cell name.
             window.GetSelection(out int row, out int col);
             string cellName = toCellName(row, col);
             object cellContents = spreadsheet.GetCellContents(cellName);
-            // Check to see if we need to prepend the string with an equals sign cause its a formula.
-            if (cellContents is Formula)
-            {
-                window.ChangeTextbox("=" + cellContents.ToString());
-                return;
-            }
-            // Otherwise just change the text box to the current contents
+            // Change the textbox to represent the current cell contents.
             window.ChangeTextbox(cellContents.ToString());
         }
 
