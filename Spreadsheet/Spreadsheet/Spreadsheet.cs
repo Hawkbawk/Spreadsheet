@@ -472,7 +472,7 @@ namespace SS
         private bool IsValidCellName(String name)
         {
             // A pattern that matches only valid strings.
-            string pattern = "^[a-zA-Z]+[1-9][0-9]*$";
+            string pattern = "^[a-zA-Z][1-9][0-9]?$";
             Regex r = new Regex(pattern);
             // Check to see if the cell name is valid to our base rules and to the other rules
             // applied by the additional rules Regex.
