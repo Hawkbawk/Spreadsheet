@@ -25,13 +25,10 @@ namespace SpreadsheetGUI
         public event Action<string> OpenEvent;
         public event Action CloseEvent;
         public event Action ChangeContents;
-        public event SelectionChangedHandler SelectionChanged;
 
         public SpreadsheetWindow()
         {
             InitializeComponent();
-            spreadsheetPanel1.SelectionChanged += selectionDoneBeenChanged;
-            spreadsheetPanel1.SelectionChanged += SelectionChanged;
             spreadsheetPanel1.SetSelection(0, 0);
 
         }
@@ -49,7 +46,10 @@ namespace SpreadsheetGUI
             return textBox1.Text;
         }
 
-
+        public SpreadsheetPanel GetSpreadsheetPanel()
+        {
+            return spreadsheetPanel1;
+        }
 
         public void GetSelection(out int row, out int col)
         {

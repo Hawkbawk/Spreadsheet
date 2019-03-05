@@ -27,15 +27,14 @@ namespace SpreadsheetGUI
             window.SaveEvent += HandleSaveEvent;
             window.NewEvent += HandleNewEvent;
             window.ChangeContents += HandleChangeContents;
-            window.SelectionChanged += HandleChangedSelection;
+            window.GetSpreadsheetPanel().SelectionChanged += HandleChangedSelection;
         }
 
         private void HandleChangedSelection(SpreadsheetPanel sender)
         {
-            MessageBox.Show("It worked!");
             window.GetSelection(out int row, out int col);
             string cellName = toCellName(row, col);
-            string cellContents = spreadsheet.GetCellValue(cellName).ToString();
+            string cellContents = spreadsheet.GetCellContents(cellName).ToString();
             window.ChangeTextbox(cellContents);
         }
 
@@ -59,6 +58,7 @@ namespace SpreadsheetGUI
                 {
                     MessageBox.Show("That formula creates a circular dependency!");
                 }
+                return;
             }
 
             foreach(string s in dependents)

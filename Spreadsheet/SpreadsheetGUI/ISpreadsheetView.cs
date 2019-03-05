@@ -10,10 +10,9 @@ namespace SpreadsheetGUI
         event Action<string> OpenEvent;
         event Action CloseEvent;
         event Action ChangeContents;
-        event SelectionChangedHandler SelectionChanged;
 
 
-
+        SpreadsheetPanel GetSpreadsheetPanel();
         string GetDesiredContents();
         void GetValue(int row, int col, out string contents);
         void SetValue(int row, int col, string content);
