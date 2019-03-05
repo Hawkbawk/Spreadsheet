@@ -66,10 +66,13 @@ namespace SpreadsheetGUI
             // Update all of the cells so they show the correct value
             foreach(string s in dependents)
             {
-                string value = spreadsheet.GetCellValue(s).ToString();
+                object value = spreadsheet.GetCellValue(s);
                 toCoordinates(s, out int currentRow, out int currentColumn);
-                // TODO: Decide what should be displayed if the value is a formula error.
-                window.SetValue(currentRow, currentColumn, value);
+                if (value is FormulaError)
+                {
+                    value = "#ERROR";
+                }
+                window.SetValue(currentRow, currentColumn, value.ToString());
             }
 
             // Update the text box to show the correct contents.
