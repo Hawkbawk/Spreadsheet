@@ -33,14 +33,6 @@ namespace SpreadsheetGUI
 
         }
 
-        private void selectionDoneBeenChanged(SpreadsheetPanel sender)
-        {
-            int row, col;
-            string contents = "Hello world!";
-            sender.GetSelection(out col, out row);
-            sender.SetValue(col, row, contents);
-        }
-
         public string GetDesiredContents()
         {
             return textBox1.Text;
@@ -66,6 +58,7 @@ namespace SpreadsheetGUI
             if (e.KeyData == Keys.Enter)
             {
                 ChangeContents();
+                e.SuppressKeyPress = true;
             }
         }
 
@@ -88,6 +81,32 @@ namespace SpreadsheetGUI
         public void ChangeTextbox(string contents)
         {
             textBox1.Text = contents;
+        }
+
+        public void OpenNew()
+        {
+            SpreadsheetWindowContext.GetContext().RunNew();
+        }
+
+        public void DoClose()
+        {
+            Close();
+        }
+
+        private void New_Clicked(object sender, EventArgs e)
+        {
+            if (NewEvent != null)
+            {
+                NewEvent();
+            }
+        }
+
+        private void Close_Clicked(object sender, EventArgs e)
+        {
+            if (CloseEvent != null)
+            {
+                CloseEvent();
+            }
         }
     }
 }

@@ -62,12 +62,10 @@ namespace SpreadsheetGUI
                 if (e is FormulaFormatException)
                 {
                     MessageBox.Show("That's not a valid formula!");
-                    window.ChangeTextbox("");
                 } 
                 else if (e is CircularException)
                 {
                     MessageBox.Show("That formula creates a circular dependency!");
-                    window.ChangeTextbox("");
                 }
                 return;
             }
@@ -102,7 +100,7 @@ namespace SpreadsheetGUI
 
         private void HandleNewEvent()
         {
-            throw new NotImplementedException();
+            window.OpenNew();
         }
 
         private void HandleSaveEvent(string obj)
@@ -112,7 +110,7 @@ namespace SpreadsheetGUI
 
         private void HandleCloseEvent()
         {
-            throw new NotImplementedException();
+            window.DoClose();
         }
 
         private void HandleOpenEvent(string obj)

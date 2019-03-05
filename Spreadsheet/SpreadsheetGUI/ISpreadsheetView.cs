@@ -19,6 +19,8 @@ namespace SpreadsheetGUI
         void GetSelection(out int row, out int col);
         void SetSelection(int row, int col);
         void ChangeTextbox(string contents);
+        void OpenNew();
+        void DoClose();
 
     }
 }
