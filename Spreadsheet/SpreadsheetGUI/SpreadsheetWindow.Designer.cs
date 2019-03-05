@@ -153,6 +153,7 @@
             this.spreadsheetPanel1.Name = "spreadsheetPanel1";
             this.spreadsheetPanel1.Size = new System.Drawing.Size(1245, 631);
             this.spreadsheetPanel1.TabIndex = 0;
+            this.spreadsheetPanel1.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SpreadsheetPanel_Hold);
             // 
             // tableLayoutPanel1
             // 
@@ -181,6 +182,7 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(1245, 631);
             this.panel1.TabIndex = 5;
+            this.panel1.MouseEnter += new System.EventHandler(this.New_Clicked);
             // 
             // SpreadsheetWindow
             // 

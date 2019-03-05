@@ -1,5 +1,4 @@
-﻿using SS;
-using SSGui;
+﻿using SSGui;
 using System;
 using System.Windows.Forms;
 
@@ -114,6 +113,32 @@ namespace SpreadsheetGUI
             if (CloseEvent != null)
             {
                 CloseEvent();
+            }
+        }
+
+        private void SpreadsheetPanel_Hold(object sender, KeyEventArgs e)
+        {
+            int row, col;
+            switch (e.KeyData)
+            {
+                case Keys.Up:
+                    GetSelection(out row, out col);
+                    SetSelection(row--, col);
+                    break;
+                case Keys.Down:
+                    GetSelection(out row, out col);
+                    SetSelection(row++, col);
+                    break;
+                case Keys.Right:
+                    GetSelection(out row, out col);
+                    SetSelection(row, col++);
+                    break;
+                case Keys.Left:
+                    GetSelection(out row, out col);
+                    SetSelection(row, col--);
+                    break;
+                default:
+                    break;
             }
         }
     }
