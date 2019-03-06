@@ -11,6 +11,7 @@ namespace SpreadsheetGUI
         event Action CloseEvent;
         event Action ChangeContents;
         event Action NewCellSelected;
+
         string GetDesiredContents();
         void GetValue(int row, int col, out string contents);
         void SetValue(int row, int col, string content);

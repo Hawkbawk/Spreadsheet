@@ -140,7 +140,7 @@ namespace SpreadsheetGUI
             openFileDialog1.InitialDirectory = "Spreadsheet Files (*.ss)|*.ss|All Files (*.*)|*.*";
             openFileDialog1.FilterIndex = 1;
             openFileDialog1.RestoreDirectory = true;
-
+            window.OpenNew();
 
             try
             {

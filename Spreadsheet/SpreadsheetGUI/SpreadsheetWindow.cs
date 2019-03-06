@@ -184,7 +184,10 @@ namespace SpreadsheetGUI
 
         private void Open_Click(object sender, EventArgs e)
         {
-
+            if(OpenEvent!=null)
+            {
+                
+            }
         }
     }
 }
