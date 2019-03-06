@@ -147,6 +147,11 @@ namespace SpreadsheetGUI
                     spreadsheetPanel1.SetSelection(col - 1, row);
                     NewCellSelected();
                     break;
+                case Keys.Enter:
+                    ChangeContents();
+                    this.ActiveControl = textBox1;
+                    e.SuppressKeyPress = true;
+                    break;
                 default:
                     break;
             }
