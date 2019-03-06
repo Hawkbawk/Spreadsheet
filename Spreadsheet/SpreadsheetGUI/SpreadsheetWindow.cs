@@ -174,5 +174,14 @@ namespace SpreadsheetGUI
         {
             throw new NotImplementedException();
         }
+
+        private void Save_Clicked(object sender, EventArgs e)
+        {
+        }
+
+        private void Open_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

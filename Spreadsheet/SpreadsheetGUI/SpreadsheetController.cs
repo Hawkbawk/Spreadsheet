@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Formulas;
@@ -116,9 +118,17 @@ namespace SpreadsheetGUI
 
 
 
-        private void HandleOpenEvent(string obj)
+        private void HandleOpenEvent(string filename)
         {
-            throw new NotImplementedException();
+            try
+            {
+                Regex r = new Regex("");
+                TextReader t = File.OpenText(filename);
+                spreadsheet = new Spreadsheet(t, r);
+            }catch (Exception e)
+            {
+                MessageBox.Show("Unable to open file" + e);
+            }
         }
     }
 }
