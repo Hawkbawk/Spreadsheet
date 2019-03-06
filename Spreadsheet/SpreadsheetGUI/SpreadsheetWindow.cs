@@ -89,6 +89,7 @@ namespace SpreadsheetGUI
             MessageBox.Show(helpMessage);
         }
 
+        //
         public void SelectedNewCell(string contents)
         {
             this.ActiveControl = spreadsheetPanel1;
