@@ -50,14 +50,14 @@ namespace SpreadsheetGUI
             return spreadsheetPanel1;
         }
 
-        public void GetSelection(out int row, out int col)
+        public void GetSelection(out int col, out int row)
         {
-            spreadsheetPanel1.GetSelection(out row, out col);
+            spreadsheetPanel1.GetSelection(out col, out row);
         }
 
-        public void SetSelection(int row, int col)
+        public void SetSelection(int col, int row)
         {
-            spreadsheetPanel1.SetSelection(row, col);
+            spreadsheetPanel1.SetSelection(col, row);
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -65,6 +65,7 @@ namespace SpreadsheetGUI
             if (e.KeyData == Keys.Enter)
             {
                 ChangeContents();
+                this.ActiveControl = spreadsheetPanel1;
                 e.SuppressKeyPress = true;
             }
         }
@@ -118,26 +119,39 @@ namespace SpreadsheetGUI
 
         private void SpreadsheetPanel_Hold(object sender, KeyEventArgs e)
         {
-            int row, col;
+            int col, row;
             switch (e.KeyData)
             {
                 case Keys.Up:
-                    GetSelection(out row, out col);
-                    SetSelection(row--, col);
+                    GetSelection(out col, out row);
+                    spreadsheetPanel1.SetSelection(col, row - 1);
                     break;
                 case Keys.Down:
-                    GetSelection(out row, out col);
-                    SetSelection(row++, col);
+                    GetSelection(out col, out row);
+                    SetSelection(col, row + 1);
                     break;
                 case Keys.Right:
-                    GetSelection(out row, out col);
-                    SetSelection(row, col++);
+                    GetSelection(out col, out row);
+                    spreadsheetPanel1.SetSelection(col + 1, row);
                     break;
                 case Keys.Left:
-                    GetSelection(out row, out col);
-                    SetSelection(row, col--);
+                    GetSelection(out col, out row);
+                    spreadsheetPanel1.SetSelection(col - 1, row);
                     break;
                 default:
+                    break;
+            }
+        }
+
+        private void SpreadsheetWindow_PreveiewKeyPress(object sender, PreviewKeyDownEventArgs e)
+        {
+            switch (e.KeyData)
+            {
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Right:
+                case Keys.Left:
+                    e.IsInputKey = true;
                     break;
             }
         }
