@@ -101,9 +101,23 @@ namespace SpreadsheetGUI
             window.OpenNew();
         }
 
-        private void HandleSaveEvent(string obj)
+        private void HandleSaveEvent(string obj)       //I think the input is filename???? 
         {
-            throw new NotImplementedException();
+            string filename = obj;
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+            saveFileDialog1.Title = "Save a Spreadsheet file";
+            saveFileDialog1.FileName = filename + ".ss";
+            saveFileDialog1.Filter = "Spreadsheet Files (*.ss)|*.ss|All Files (*.*)|*.*";
+            saveFileDialog1.FilterIndex = 2;
+            saveFileDialog1.RestoreDirectory = true;
+            
+            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            {
+                using (StreamWriter sw = new StreamWriter(saveFileDialog1.FileName))
+                {
+                    spreadsheet.Save(sw);
+                }
+            }
         }
 
         private void HandleCloseEvent()
@@ -118,11 +132,19 @@ namespace SpreadsheetGUI
 
 
 
-        private void HandleOpenEvent(string filename)
+        private void HandleOpenEvent(string obj)
         {
+            string filename = obj;
+            OpenFileDialog openFileDialog1 = new OpenFileDialog();
+            openFileDialog1.Title = "Open a Spreadsheet file";
+            openFileDialog1.InitialDirectory = "Spreadsheet Files (*.ss)|*.ss|All Files (*.*)|*.*";
+            openFileDialog1.FilterIndex = 1;
+            openFileDialog1.RestoreDirectory = true;
+
+
             try
             {
-                Regex r = new Regex("");
+                Regex r = new Regex("^[a-zA-Z][1-9][0-9]?$");
                 TextReader t = File.OpenText(filename);
                 spreadsheet = new Spreadsheet(t, r);
             }catch (Exception e)

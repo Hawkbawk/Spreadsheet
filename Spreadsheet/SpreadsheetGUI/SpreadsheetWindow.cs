@@ -89,7 +89,6 @@ namespace SpreadsheetGUI
             MessageBox.Show(helpMessage);
         }
 
-        //
         public void SelectedNewCell(string contents)
         {
             this.ActiveControl = spreadsheetPanel1;
@@ -177,6 +176,10 @@ namespace SpreadsheetGUI
 
         private void Save_Clicked(object sender, EventArgs e)
         {
+            if (SaveEvent != null)
+            {
+                
+            }
         }
 
         private void Open_Click(object sender, EventArgs e)
