@@ -31,7 +31,7 @@ namespace SpreadsheetGUI
         {
             InitializeComponent();
             cd = new CloseDialog();
-            cd.CloseWithoutSave += CloseWithoutSave;
+            //cd.CloseWithoutSave += CloseWithoutSave;
             spreadsheetPanel1.SelectionChanged += HandleChangedSelection;
             spreadsheetPanel1.SetSelection(0, 0);
 
@@ -91,6 +91,7 @@ namespace SpreadsheetGUI
 
         public void SelectedNewCell(string contents)
         {
+            this.ActiveControl = spreadsheetPanel1;
             textBox1.Text = contents;
         }
 
@@ -128,18 +129,22 @@ namespace SpreadsheetGUI
                 case Keys.Up:
                     GetSelection(out col, out row);
                     spreadsheetPanel1.SetSelection(col, row - 1);
+                    NewCellSelected();
                     break;
                 case Keys.Down:
                     GetSelection(out col, out row);
                     SetSelection(col, row + 1);
+                    NewCellSelected();
                     break;
                 case Keys.Right:
                     GetSelection(out col, out row);
                     spreadsheetPanel1.SetSelection(col + 1, row);
+                    NewCellSelected();
                     break;
                 case Keys.Left:
                     GetSelection(out col, out row);
                     spreadsheetPanel1.SetSelection(col - 1, row);
+                    NewCellSelected();
                     break;
                 default:
                     break;
@@ -157,6 +162,11 @@ namespace SpreadsheetGUI
                     e.IsInputKey = true;
                     break;
             }
+        }
+
+        public void CloseWithoutSave()
+        {
+            throw new NotImplementedException();
         }
     }
 }
