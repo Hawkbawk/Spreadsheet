@@ -38,9 +38,9 @@
             this.panel3 = new System.Windows.Forms.Panel();
             this.CurrentCell = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
-            this.spreadsheetPanel1 = new SSGui.SpreadsheetPanel();
             this.panel1 = new System.Windows.Forms.Panel();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.spreadsheetPanel1 = new SSGui.SpreadsheetPanel();
             this.menuStrip1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.panel1.SuspendLayout();
@@ -173,6 +173,20 @@
             // openFileDialog1
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
+            // 
+            // spreadsheetPanel1
+            // 
+            this.spreadsheetPanel1.AutoScroll = true;
+            this.spreadsheetPanel1.AutoSize = true;
+            this.spreadsheetPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.spreadsheetPanel1.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.spreadsheetPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.spreadsheetPanel1.ForeColor = System.Drawing.SystemColors.Control;
+            this.spreadsheetPanel1.Location = new System.Drawing.Point(0, 0);
+            this.spreadsheetPanel1.Margin = new System.Windows.Forms.Padding(5);
+            this.spreadsheetPanel1.Name = "spreadsheetPanel1";
+            this.spreadsheetPanel1.Size = new System.Drawing.Size(1272, 485);
+            this.spreadsheetPanel1.TabIndex = 0;
             // 
             // SpreadsheetWindow
             // 
