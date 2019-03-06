@@ -17,6 +17,8 @@ namespace SpreadsheetGUI
         void GetSelection(out int row, out int col);
         void SetSelection(int row, int col);
         void SelectedNewCell(string contents);
+
+        void CloseWithoutSave();
         void OpenNew();
         void DoClose();
 

@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CloseDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CloseDialog.Designer.cs">
+      <DependentUpon>CloseDialog.cs</DependentUpon>
+    </Compile>
     <Compile Include="SpreadsheetWindowContext.cs" />
     <Compile Include="ISpreadsheetView.cs" />
     <Compile Include="SpreadsheetController.cs" />
@@ -57,6 +63,9 @@
     </Compile>
     <Compile Include="Launch.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="CloseDialog.resx">
+      <DependentUpon>CloseDialog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -65,6 +74,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <EmbeddedResource Include="SpreadsheetWindow.resx">
       <DependentUpon>SpreadsheetWindow.cs</DependentUpon>
@@ -95,6 +105,9 @@
       <Project>{9025a594-df2a-4e6a-b8c2-f087ecc3e203}</Project>
       <Name>Spreadsheet</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Properties\download.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

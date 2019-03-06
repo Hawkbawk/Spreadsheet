@@ -106,8 +106,15 @@ namespace SpreadsheetGUI
 
         private void HandleCloseEvent()
         {
+            if (spreadsheet.Changed)
+            {
+                
+                return;
+            }
             window.DoClose();
         }
+
+
 
         private void HandleOpenEvent(string obj)
         {

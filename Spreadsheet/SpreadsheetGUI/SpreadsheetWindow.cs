@@ -18,7 +18,6 @@ namespace SpreadsheetGUI
             " and then Open. A File Explorer box will then open up and then you can navigate to the desired file. This program works with only with .ss files" +
             ". If you try and open another file, an error message will popup, telling you to try again. \nIf you want to close your current spreadsheet, " +
             "simply hit the \"X\" button in the top right corner, or select File and then Close, and your current spreadsheet will close.";
-
         public event Action NewEvent;
         public event Action<string> SaveEvent;
         public event Action<string> OpenEvent;
@@ -26,9 +25,13 @@ namespace SpreadsheetGUI
         public event Action ChangeContents;
         public event Action NewCellSelected;
 
+        private CloseDialog cd;
+
         public SpreadsheetWindow()
         {
             InitializeComponent();
+            cd = new CloseDialog();
+            cd.CloseWithoutSave += CloseWithoutSave;
             spreadsheetPanel1.SelectionChanged += HandleChangedSelection;
             spreadsheetPanel1.SetSelection(0, 0);
 
@@ -116,30 +119,15 @@ namespace SpreadsheetGUI
             }
         }
 
-        private void SpreadsheetPanel_Hold(object sender, KeyEventArgs e)
+        public void PrepareForCloseWithoutSave()
         {
-            int row, col;
-            switch (e.KeyData)
-            {
-                case Keys.Up:
-                    GetSelection(out row, out col);
-                    SetSelection(row--, col);
-                    break;
-                case Keys.Down:
-                    GetSelection(out row, out col);
-                    SetSelection(row++, col);
-                    break;
-                case Keys.Right:
-                    GetSelection(out row, out col);
-                    SetSelection(row, col++);
-                    break;
-                case Keys.Left:
-                    GetSelection(out row, out col);
-                    SetSelection(row, col--);
-                    break;
-                default:
-                    break;
-            }
+            cd.Show();``
+        }
+
+        public void CloseWithoutSave()
+        {
+            
+
         }
     }
 }
