@@ -223,7 +223,6 @@ namespace SpreadsheetGUI
                 return;
             }
             textBoxOne.Text += e.KeyChar;
-            
             textBoxOne.Select(textBoxOne.TextLength, 0);
             ActiveControl = textBoxOne;
         }
