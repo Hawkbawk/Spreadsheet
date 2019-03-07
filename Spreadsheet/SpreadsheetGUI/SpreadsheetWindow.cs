@@ -199,14 +199,23 @@ namespace SpreadsheetGUI
         private void Open_Click(object sender, EventArgs e)
         {
             // Show the open file dialog and filter it to only show *.ss files.
-            openSpreadsheetDialog.Filter = "Spreadsheet Files (*.ss)|*.ss";
+            openSpreadsheetDialog.DefaultExt = "Spreadsheet Files (*.ss)|*.ss";
             DialogResult result = openSpreadsheetDialog.ShowDialog();
             // Call the open event if the user clicks a file and hits okay, otherwise do nothing.
             if (result == DialogResult.OK || result == DialogResult.Yes)
             {
                 if (OpenEvent != null)
                 {
+                    try
+                    {
                     OpenEvent(Path.GetFullPath(openSpreadsheetDialog.FileName));
+
+                    }
+                    catch (Exception)
+                    {
+                        MessageBox.Show("Unable to read file. \n" +
+                            "Please only select files with a *.ss extension.");
+                    }
                 }
             }
         }
