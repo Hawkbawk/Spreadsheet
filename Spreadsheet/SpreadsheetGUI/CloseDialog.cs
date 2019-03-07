@@ -73,6 +73,7 @@ namespace SpreadsheetGUI
         {
             if (WantsToSave != null)
             {
+                Close();
                 WantsToSave(sender, e);
             }
         }
@@ -88,6 +89,7 @@ namespace SpreadsheetGUI
             {
                 CloseWithoutSaving();
             }
+
         }
     }
 }
