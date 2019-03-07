@@ -55,6 +55,7 @@ namespace SpreadsheetGUI
             cd = new CloseDialog();
             cd.CloseWithoutSaving += HandleCloseWithoutSave;
             cd.Cancel += HandleCancelCloseWithoutSave;
+            cd.CloseDialogClosing += HandleCancelCloseWithoutSave;
             // Show the close dialog as a dialog.
             cd.ShowDialog();
         }
@@ -146,7 +147,7 @@ namespace SpreadsheetGUI
         {
             if (CloseEvent != null)
             {
-                CloseEvent();
+                DoClose();
             }
         }
 
@@ -156,7 +157,7 @@ namespace SpreadsheetGUI
         /// </summary>
         private void HandleCancelCloseWithoutSave()
         {
-            cd.Hide();
+            cd.Close();
             WindowClosing.Cancel = true;
             FormClosing += SpreadsheetForm_Closing;
         }

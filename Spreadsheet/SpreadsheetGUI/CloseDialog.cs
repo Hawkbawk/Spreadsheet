@@ -7,6 +7,7 @@ namespace SpreadsheetGUI
     {
         public event Action CloseWithoutSaving;
         public event Action Cancel;
+        public event Action CloseDialogClosing;
 
         
 
