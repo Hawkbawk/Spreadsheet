@@ -1,9 +1,5 @@
 ﻿using SpreadsheetGUI;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SpreadsheetGUITest
 {
@@ -16,44 +12,134 @@ namespace SpreadsheetGUITest
         public event Action<string> OpenEvent;
         public event Action<string> SaveEvent;
 
+        public string filename { get; private set; }
+        public string cellContents { get; private set; }
+
+
+        public void FireChangeContents()
+        {
+            if (ChangeContents != null)
+            {
+                ChangeContents();
+            }
+        }
+
+        public void FireCloseEvent()
+        {
+            if (CloseEvent != null)
+            {
+                CloseEvent();
+            }
+        }
+        public void FireNewCellSelected()
+        {
+            if (NewCellSelected != null)
+            {
+                NewCellSelected();
+            }
+        }
+        public void FireNewEvent()
+        {
+            if (NewEvent != null)
+            {
+                NewEvent();
+            }
+        }
+        public void FireOpenEvent(string filename)
+        {
+            if (OpenEvent != null)
+            {
+                OpenEvent(filename);
+            }
+        }
+        public void FireSaveEvent(string filename)
+        {
+            if (SaveEvent != null)
+            {
+                SaveEvent(filename);
+            }
+        }
+
+
+
+        public bool CalledBeginCloseWithoutSave
+        {
+            get; private set;
+        }
+
+        public bool CalledDoClose
+        {
+            get; private set;
+        }
+        public bool CalledGetDesiredContents
+        {
+            get; private set;
+        }
+        public bool CalledGetSelection
+        {
+            get; private set;
+        }
+        public bool CalledOpenNew
+        {
+            get; private set;
+        }
+        public bool CalledSelectedNewCell
+        {
+            get; private set;
+        }
+        public bool CalledSetValue
+        {
+            get; private set;
+        }
+
         public void BeginCloseWithoutSave()
         {
-            throw new NotImplementedException();
+            CalledBeginCloseWithoutSave = true;
         }
 
         public void DoClose()
         {
-            throw new NotImplementedException();
+            CalledDoClose = true;
         }
 
         public string GetDesiredContents()
         {
-            throw new NotImplementedException();
+            CalledGetDesiredContents = true;
+            if (cellContents == null)
+            {
+                return "";
+            }
+            return cellContents;
         }
 
         public void GetSelection(out int col, out int row)
         {
-            throw new NotImplementedException();
+            CalledGetSelection = true;
+            col = -1;
+            row = -1;
         }
 
         public void OpenNew()
         {
-            throw new NotImplementedException();
+            CalledOpenNew = true;
         }
 
         public void OpenNew(string filename)
         {
-            throw new NotImplementedException();
+            this.filename = filename;
+            CalledOpenNew = true;
         }
 
         public void SelectedNewCell(string contents)
         {
-            throw new NotImplementedException();
+            cellContents = contents;
+            CalledSelectedNewCell = true;
         }
 
         public void SetValue(int col, int row, string content)
         {
-            throw new NotImplementedException();
+            CalledSetValue = true;
+            cellContents = content;
         }
     }
 
