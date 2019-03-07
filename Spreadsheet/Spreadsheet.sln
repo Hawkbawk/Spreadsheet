@@ -45,6 +45,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetGUI", "Spreadshe
 		{862EAD85-346F-4D2B-A53C-98074FF813BA} = {862EAD85-346F-4D2B-A53C-98074FF813BA}
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetGUITest", "SpreadsheetGUITest\SpreadsheetGUITest.csproj", "{365A749D-D803-4411-86C7-6B1BFFA22286}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -164,6 +166,14 @@ Global
 		{BC3D3E4C-66FE-403C-B17E-94A2D193B30E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BC3D3E4C-66FE-403C-B17E-94A2D193B30E}.Release|x86.ActiveCfg = Release|Any CPU
 		{BC3D3E4C-66FE-403C-B17E-94A2D193B30E}.Release|x86.Build.0 = Release|Any CPU
+		{365A749D-D803-4411-86C7-6B1BFFA22286}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{365A749D-D803-4411-86C7-6B1BFFA22286}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{365A749D-D803-4411-86C7-6B1BFFA22286}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{365A749D-D803-4411-86C7-6B1BFFA22286}.Debug|x86.Build.0 = Debug|Any CPU
+		{365A749D-D803-4411-86C7-6B1BFFA22286}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{365A749D-D803-4411-86C7-6B1BFFA22286}.Release|Any CPU.Build.0 = Release|Any CPU
+		{365A749D-D803-4411-86C7-6B1BFFA22286}.Release|x86.ActiveCfg = Release|Any CPU
+		{365A749D-D803-4411-86C7-6B1BFFA22286}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
