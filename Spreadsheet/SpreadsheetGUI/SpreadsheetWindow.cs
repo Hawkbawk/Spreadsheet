@@ -26,15 +26,16 @@ namespace SpreadsheetGUI
         public event Action ChangeContents;
         public event Action NewCellSelected;
 
-        private CloseDialog cd;
+        // A private instance variable for telling if the shift key has been pressed. Allows for
+        // Shift+Tab and Shift+Enter to move the current cell selection, just like in Excel.
+        private bool ShiftPressed { get; set; }
 
         public SpreadsheetWindow()
         {
             InitializeComponent();
-            cd = new CloseDialog();
-            //cd.CloseWithoutSave += CloseWithoutSave;
-            spreadsheetPanel1.SelectionChanged += HandleChangedSelection;
-            spreadsheetPanel1.SetSelection(0, 0);
+            spreadsheetPanelOne.SelectionChanged += HandleChangedSelection;
+            spreadsheetPanelOne.SetSelection(0, 0);
+            ActiveControl = spreadsheetPanelOne;
 
         }
 
@@ -46,22 +47,22 @@ namespace SpreadsheetGUI
 
         public string GetDesiredContents()
         {
-            return textBox1.Text;
+            return textBoxOne.Text;
         }
 
         public SpreadsheetPanel GetSpreadsheetPanel()
         {
-            return spreadsheetPanel1;
+            return spreadsheetPanelOne;
         }
 
         public void GetSelection(out int col, out int row)
         {
-            spreadsheetPanel1.GetSelection(out col, out row);
+            spreadsheetPanelOne.GetSelection(out col, out row);
         }
 
         public void SetSelection(int col, int row)
         {
-            spreadsheetPanel1.SetSelection(col, row);
+            spreadsheetPanelOne.SetSelection(col, row);
         }
 
         private void TextBox_KeyDown(object sender, KeyEventArgs e)
@@ -69,20 +70,20 @@ namespace SpreadsheetGUI
             if (e.KeyData == Keys.Enter)
             {
                 ChangeContents();
-                ActiveControl = spreadsheetPanel1;
+                ActiveControl = spreadsheetPanelOne;
                 e.SuppressKeyPress = true;
             }
         }
 
         public void GetValue(int row, int col, out string contents)
         {
-            spreadsheetPanel1.GetValue(row, col, out contents);
+            spreadsheetPanelOne.GetValue(row, col, out contents);
 
         }
 
         public void SetValue(int row, int col, string content)
         {
-            spreadsheetPanel1.SetValue(col, row, content);
+            spreadsheetPanelOne.SetValue(col, row, content);
         }
 
         private void Help_Clicked(object sender, EventArgs e)
@@ -92,8 +93,8 @@ namespace SpreadsheetGUI
 
         public void SelectedNewCell(string contents)
         {
-            ActiveControl = spreadsheetPanel1;
-            textBox1.Text = contents;
+            ActiveControl = spreadsheetPanelOne;
+            textBoxOne.Text = contents;
         }
 
         public void OpenNew()
@@ -127,39 +128,56 @@ namespace SpreadsheetGUI
             }
         }
 
-        private void SpreadsheetPanel_Hold(object sender, KeyEventArgs e)
+        private void SpreadsheetPanel_KeyDown(object sender, KeyEventArgs e)
         {
             int col, row;
             switch (e.KeyData)
             {
                 case Keys.Up:
+                    // Move the current cell selection up one.
                     GetSelection(out col, out row);
-                    spreadsheetPanel1.SetSelection(col, row - 1);
+                    spreadsheetPanelOne.SetSelection(col, row - 1);
                     NewCellSelected();
                     break;
                 case Keys.Down:
+                    // Move the current cell selection down one.
                     GetSelection(out col, out row);
                     SetSelection(col, row + 1);
                     NewCellSelected();
                     break;
                 case Keys.Right:
+                    // Move the current cell selection right one.
                     GetSelection(out col, out row);
-                    spreadsheetPanel1.SetSelection(col + 1, row);
+                    SetSelection(col + 1, row);
                     NewCellSelected();
                     break;
                 case Keys.Left:
+                    // Move the current cell selection left one.
                     GetSelection(out col, out row);
-                    spreadsheetPanel1.SetSelection(col - 1, row);
+                    spreadsheetPanelOne.SetSelection(col - 1, row);
                     NewCellSelected();
                     break;
                 case Keys.Enter:
-                    ChangeContents();
-                    ActiveControl = textBox1;
-                    e.SuppressKeyPress = true;
+                    // Move the current cell selection down one.
+                    GetSelection(out col, out row);
+                    SetSelection(col, row + 1);
+                    NewCellSelected();
                     break;
-                default:
+                case Keys.Tab:
+                    // Move the current cell selection one to the right.
+                    GetSelection(out col, out row);
+                    spreadsheetPanelOne.SetSelection(col + 1, row);
+                    NewCellSelected();
+                    break;
+                case Keys.Shift:
+                    ShiftPressed = e.Shift;
+                    break;
+                case Keys.Back:
+                    textBoxOne.Text = "";
+                    ChangeContents();
                     break;
             }
+
         }
 
         public void CloseWithoutSave()
@@ -172,13 +190,13 @@ namespace SpreadsheetGUI
 
         private void Save_Clicked(object sender, EventArgs e)
         {
-            saveFileDialog1.Filter = "Spreadsheet Files (*.ss)|*.ss";
-            DialogResult result = saveFileDialog1.ShowDialog();
+            saveSpreadsheetDialog.Filter = "Spreadsheet Files (*.ss)|*.ss";
+            DialogResult result = saveSpreadsheetDialog.ShowDialog();
             if (result == DialogResult.OK || result == DialogResult.Yes)
             {
                 if (SaveEvent != null)
                 {
-                    SaveEvent(Path.GetFullPath(saveFileDialog1.FileName));
+                    SaveEvent(Path.GetFullPath(saveSpreadsheetDialog.FileName));
                 }
 
             }
@@ -186,16 +204,28 @@ namespace SpreadsheetGUI
 
         private void Open_Click(object sender, EventArgs e)
         {
-            openFileDialog1.Filter = "Spreadsheet Files (*.ss)|*.ss";
-            DialogResult result = openFileDialog1.ShowDialog();
+            openSpreadsheetDialog.Filter = "Spreadsheet Files (*.ss)|*.ss";
+            DialogResult result = openSpreadsheetDialog.ShowDialog();
             if (result == DialogResult.OK || result == DialogResult.Yes)
             {
                 if (OpenEvent != null)
                 {
-                    OpenEvent(Path.GetFullPath(openFileDialog1.FileName));
+                    OpenEvent(Path.GetFullPath(openSpreadsheetDialog.FileName));
                 }
 
             }
+        }
+
+        private void SpreadsheetPanel_KeyPressed(object sender, KeyPressEventArgs e)
+        {
+            if (char.IsControl(e.KeyChar))
+            {
+                return;
+            }
+            textBoxOne.Text += e.KeyChar;
+            
+            textBoxOne.Select(textBoxOne.TextLength, 0);
+            ActiveControl = textBoxOne;
         }
     }
 }

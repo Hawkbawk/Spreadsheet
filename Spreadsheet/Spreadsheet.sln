@@ -41,6 +41,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProfilingCode", "ProfilingCode\ProfilingCode.csproj", "{F8CA0494-0566-4F4F-9FFB-5D31AC8CA6E7}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SpreadsheetGUI", "SpreadsheetGUI\SpreadsheetGUI.csproj", "{BC3D3E4C-66FE-403C-B17E-94A2D193B30E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{862EAD85-346F-4D2B-A53C-98074FF813BA} = {862EAD85-346F-4D2B-A53C-98074FF813BA}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
