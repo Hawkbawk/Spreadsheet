@@ -5,10 +5,8 @@ using System.Windows.Forms;
 
 namespace SpreadsheetGUI
 {
-
     public partial class spreadsheetWindow : Form, ISpreadsheetView
     {
-
         private string helpMessage = "Hey there! So you want to know how to use this spreadsheet program? Well, it's fairly" +
             " similar to Excel, with a few differences. First, if you want to change the contents of a cell, simply click on " +
             "the cell and enter in your desired cell contents in the Cell Contexts text box, then press enter. \nYou can use formulas," +
@@ -19,9 +17,8 @@ namespace SpreadsheetGUI
             " and then Open. A File Explorer box will then open up and then you can navigate to the desired file. This program works with only with .ss files" +
             ". If you try and open another file, an error message will popup, telling you to try again. \nIf you want to close your current spreadsheet, " +
             "simply hit the \"X\" button in the top right corner, or select File and then Close, and your current spreadsheet will close.";
-        // A private instance variable for telling if the shift key has been pressed. Allows for
-        // Shift+Tab and Shift+Enter to move the current cell selection, just like in Excel.
-        private bool ShiftPressed { get; set; }
+
+        private FormClosingEventArgs WindowClosing;
 
         public spreadsheetWindow()
         {
@@ -29,7 +26,6 @@ namespace SpreadsheetGUI
             spreadsheetPanelOne.SelectionChanged += HandleChangedSelection;
             SetSelection(0, 0);
             ActiveControl = spreadsheetPanelOne;
-
         }
 
         public event Action ChangeContents;
@@ -44,8 +40,6 @@ namespace SpreadsheetGUI
 
         public event Action<string> SaveEvent;
 
-        private FormClosingEventArgs WindowClosing;
-
         /// <summary>
         /// Starts the process for closing the form, if the current data hasn't been saved.
         /// </summary>
@@ -56,6 +50,7 @@ namespace SpreadsheetGUI
             cd.CloseWithoutSaving += HandleCloseWithoutSave;
             cd.Cancel += HandleCancelCloseWithoutSave;
             cd.CloseDialogClosing += HandleCancelCloseWithoutSave;
+            cd.WantsToSave += Save_Clicked;
             // Show the close dialog as a dialog.
             cd.ShowDialog();
         }
@@ -111,20 +106,10 @@ namespace SpreadsheetGUI
         /// <param name="contents">
         /// The contents of the currently selected cell to be displayed in the text box
         /// </param>
-        public void HandleSelectedNewCell(string contents)
+        public void SelectedNewCell(string contents)
         {
             ActiveControl = spreadsheetPanelOne;
             textBoxOne.Text = contents;
-        }
-
-        /// <summary>
-        /// Helper method that sets the current cell selection to the passed in column and row.
-        /// </summary>
-        /// <param name="col">The desired column to be selected</param>
-        /// <param name="row">The desired row to be selected</param>
-        private void SetSelection(int col, int row)
-        {
-            spreadsheetPanelOne.SetSelection(col, row);
         }
 
         /// <summary>
@@ -157,6 +142,7 @@ namespace SpreadsheetGUI
         /// </summary>
         private void HandleCancelCloseWithoutSave()
         {
+            cd.CloseDialogClosing -= HandleCancelCloseWithoutSave;
             cd.Close();
             WindowClosing.Cancel = true;
             FormClosing += SpreadsheetForm_Closing;
@@ -222,7 +208,6 @@ namespace SpreadsheetGUI
                 {
                     OpenEvent(Path.GetFullPath(openSpreadsheetDialog.FileName));
                 }
-
             }
         }
 
@@ -241,7 +226,38 @@ namespace SpreadsheetGUI
                 {
                     SaveEvent(Path.GetFullPath(saveSpreadsheetDialog.FileName));
                 }
+            }
+        }
 
+        /// <summary>
+        /// Helper method that sets the current cell selection to the passed in column and row.
+        /// </summary>
+        /// <param name="col">The desired column to be selected</param>
+        /// <param name="row">The desired row to be selected</param>
+        private void SetSelection(int col, int row)
+        {
+            spreadsheetPanelOne.SetSelection(col, row);
+        }
+
+        /// <summary>
+        /// Private Event Handler that is called whenever the entire form starts closing. Ensures
+        /// that no data is lost, that the event can be canceled if needed, and that all appropriate
+        /// closing steps are otherwise taken.
+        /// </summary>
+        /// <param name="sender">The object calling this method</param>
+        /// <param name="e">:The Form closing event arguments associated with this event</param>
+        private void SpreadsheetForm_Closing(object sender, FormClosingEventArgs e)
+        {
+            // Remove this method from the FormClosing event so it doesn't fire again if the window
+            // actually needs to be closed.
+            FormClosing -= SpreadsheetForm_Closing;
+            // Set aside the FormClosingEventArgs so the close can be canceled just in case the user
+            // has unsaved data they'd like to save.
+            WindowClosing = e;
+            // Call the method associated with the close event.
+            if (CloseEvent != null)
+            {
+                CloseEvent();
             }
         }
 
@@ -264,45 +280,47 @@ namespace SpreadsheetGUI
                     SetSelection(col, row - 1);
                     NewCellSelected();
                     break;
+
                 case Keys.Down:
                     // Move the current cell selection down one.
                     GetSelection(out col, out row);
                     SetSelection(col, row + 1);
                     NewCellSelected();
                     break;
+
                 case Keys.Right:
                     // Move the current cell selection right one.
                     GetSelection(out col, out row);
                     SetSelection(col + 1, row);
                     NewCellSelected();
                     break;
+
                 case Keys.Left:
                     // Move the current cell selection left one.
                     GetSelection(out col, out row);
                     SetSelection(col - 1, row);
                     NewCellSelected();
                     break;
+
                 case Keys.Enter:
                     // Move the current cell selection down one.
                     GetSelection(out col, out row);
                     SetSelection(col, row + 1);
                     NewCellSelected();
                     break;
+
                 case Keys.Tab:
                     // Move the current cell selection one to the right.
                     GetSelection(out col, out row);
                     SetSelection(col + 1, row);
                     NewCellSelected();
                     break;
-                case Keys.Shift:
-                    ShiftPressed = e.Shift;
-                    break;
+
                 case Keys.Back:
                     textBoxOne.Text = "";
                     ChangeContents();
                     break;
             }
-
         }
 
         /// <summary>
@@ -342,29 +360,6 @@ namespace SpreadsheetGUI
                 e.SuppressKeyPress = true;
                 ActiveControl = spreadsheetPanelOne;
             }
-        }
-
-        /// <summary>
-        /// Private Event Handler that is called whenever the entire form starts closing. Ensures
-        /// that no data is lost, that the event can be canceled if needed, and that all appropriate
-        /// closing steps are otherwise taken.
-        /// </summary>
-        /// <param name="sender">The object calling this method</param>
-        /// <param name="e">:The Form closing event arguments associated with this event</param>
-        private void SpreadsheetForm_Closing(object sender, FormClosingEventArgs e)
-        {
-            // Remove this method from the FormClosing event so it doesn't fire again if the window
-            // actually needs to be closed.
-            FormClosing -= SpreadsheetForm_Closing;
-            // Set aside the FormClosingEventArgs so the close can be canceled just in case the user
-            // has unsaved data they'd like to save.
-            WindowClosing = e;
-            // Call the method associated with the close event.
-            if (CloseEvent != null)
-            {
-                CloseEvent();
-            }
-
         }
     }
 }

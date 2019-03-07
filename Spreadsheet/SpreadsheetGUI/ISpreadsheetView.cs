@@ -1,7 +1,4 @@
-﻿using SSGui;
-using System;
-using System.IO;
-using System.Windows.Forms;
+﻿using System;
 
 namespace SpreadsheetGUI
 {
@@ -19,18 +16,20 @@ namespace SpreadsheetGUI
 
         event Action<string> SaveEvent;
 
+        void BeginCloseWithoutSave();
+
         void DoClose();
 
         string GetDesiredContents();
 
         void GetSelection(out int col, out int row);
+
         void OpenNew();
 
         void OpenNew(string filename);
 
-        void HandleSelectedNewCell(string contents);
+        void SelectedNewCell(string contents);
 
         void SetValue(int col, int row, string content);
-        void BeginCloseWithoutSave();
     }
 }
