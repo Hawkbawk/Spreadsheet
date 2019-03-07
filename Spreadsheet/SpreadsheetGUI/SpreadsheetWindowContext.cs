@@ -32,5 +32,18 @@ namespace SpreadsheetGUI
 
             window.Show();
         }
+
+        public void RunNew(string filename)
+        {
+            SpreadsheetWindow window = new SpreadsheetWindow();
+
+            new SpreadsheetController(window, filename);
+
+            windowCount++;
+
+            window.FormClosed += (o, e) => { if (--windowCount <= 0) ExitThread(); };
+
+            window.Show();
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using SSGui;
 using System;
+using System.IO;
 
 namespace SpreadsheetGUI
 {
@@ -21,6 +22,8 @@ namespace SpreadsheetGUI
 
         void CloseWithoutSave();
         void OpenNew();
+
+        void OpenNew(string filename);
         void DoClose();
 
     }

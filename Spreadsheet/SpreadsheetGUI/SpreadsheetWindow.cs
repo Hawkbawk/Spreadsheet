@@ -1,5 +1,6 @@
 ﻿using SSGui;
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace SpreadsheetGUI
@@ -68,7 +69,7 @@ namespace SpreadsheetGUI
             if (e.KeyData == Keys.Enter)
             {
                 ChangeContents();
-                this.ActiveControl = spreadsheetPanel1;
+                ActiveControl = spreadsheetPanel1;
                 e.SuppressKeyPress = true;
             }
         }
@@ -91,13 +92,18 @@ namespace SpreadsheetGUI
 
         public void SelectedNewCell(string contents)
         {
-            this.ActiveControl = spreadsheetPanel1;
+            ActiveControl = spreadsheetPanel1;
             textBox1.Text = contents;
         }
 
         public void OpenNew()
         {
             SpreadsheetWindowContext.GetContext().RunNew();
+        }
+
+        public void OpenNew(string filename)
+        {
+            SpreadsheetWindowContext.GetContext().RunNew(filename);
         }
 
         public void DoClose()
@@ -148,7 +154,7 @@ namespace SpreadsheetGUI
                     break;
                 case Keys.Enter:
                     ChangeContents();
-                    this.ActiveControl = textBox1;
+                    ActiveControl = textBox1;
                     e.SuppressKeyPress = true;
                     break;
                 default:
@@ -156,37 +162,39 @@ namespace SpreadsheetGUI
             }
         }
 
-        private void SpreadsheetWindow_PreveiewKeyPress(object sender, PreviewKeyDownEventArgs e)
-        {
-            switch (e.KeyData)
-            {
-                case Keys.Up:
-                case Keys.Down:
-                case Keys.Right:
-                case Keys.Left:
-                    e.IsInputKey = true;
-                    break;
-            }
-        }
-
         public void CloseWithoutSave()
         {
-            throw new NotImplementedException();
+            if (CloseEvent != null)
+            {
+                CloseEvent();
+            }
         }
 
         private void Save_Clicked(object sender, EventArgs e)
         {
-            if (SaveEvent != null)
+            saveFileDialog1.Filter = "Spreadsheet Files (*.ss)|*.ss";
+            DialogResult result = saveFileDialog1.ShowDialog();
+            if (result == DialogResult.OK || result == DialogResult.Yes)
             {
-                
+                if (SaveEvent != null)
+                {
+                    SaveEvent(Path.GetFullPath(saveFileDialog1.FileName));
+                }
+
             }
         }
 
         private void Open_Click(object sender, EventArgs e)
         {
-            if(OpenEvent!=null)
+            openFileDialog1.Filter = "Spreadsheet Files (*.ss)|*.ss";
+            DialogResult result = openFileDialog1.ShowDialog();
+            if (result == DialogResult.OK || result == DialogResult.Yes)
             {
-                
+                if (OpenEvent != null)
+                {
+                    OpenEvent(Path.GetFullPath(openFileDialog1.FileName));
+                }
+
             }
         }
     }

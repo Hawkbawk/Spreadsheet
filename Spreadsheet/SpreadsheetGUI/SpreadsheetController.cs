@@ -1,14 +1,10 @@
-﻿using System;
+﻿using Formulas;
+using SS;
+using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Formulas;
-using SS;
-using SSGui;
 
 namespace SpreadsheetGUI
 {
@@ -18,11 +14,11 @@ namespace SpreadsheetGUI
 
         private Spreadsheet spreadsheet;
 
-        public SpreadsheetController(ISpreadsheetView window)
+        public SpreadsheetController(ISpreadsheetView _window)
         {
-            this.window = window;
+            window = _window;
 
-            this.spreadsheet = new Spreadsheet();
+            spreadsheet = new Spreadsheet();
 
             window.CloseEvent += HandleCloseEvent;
             window.OpenEvent += HandleOpenEvent;
@@ -32,11 +28,32 @@ namespace SpreadsheetGUI
             window.NewCellSelected += HandleNewCellSelected;
         }
 
+        public SpreadsheetController(ISpreadsheetView _window, string filename) : this(_window)
+        {
+            int col, row;
+            Regex r = new Regex(@"^[a-zA-Z][1-9][0-9]?$");
+            using (StreamReader sw = new StreamReader(filename))
+            {
+                spreadsheet = new Spreadsheet(sw, r);
+            }
+            foreach (string cell in spreadsheet.GetNamesOfAllNonemptyCells())
+            {
+                toCoordinates(cell, out row, out col);
+                window.SetValue(row, col, spreadsheet.GetCellValue(cell).ToString());
+            }
+            HandleNewCellSelected();
+        }
+
         private void HandleNewCellSelected()
         {
             window.GetSelection(out int row, out int col);
             string cellName = toCellName(row, col);
             object contents = spreadsheet.GetCellContents(cellName);
+            if (contents is Formula)
+            {
+                window.SelectedNewCell("=" + contents.ToString());
+                return;
+            }
             window.SelectedNewCell(contents.ToString());
         }
 
@@ -57,7 +74,7 @@ namespace SpreadsheetGUI
                 if (e is FormulaFormatException)
                 {
                     MessageBox.Show("That's not a valid formula!");
-                } 
+                }
                 else if (e is CircularException)
                 {
                     MessageBox.Show("That formula creates a circular dependency!");
@@ -66,7 +83,7 @@ namespace SpreadsheetGUI
             }
 
             // Update all of the cells so they show the correct value
-            foreach(string s in dependents)
+            foreach (string s in dependents)
             {
                 object value = spreadsheet.GetCellValue(s);
                 toCoordinates(s, out int currentRow, out int currentColumn);
@@ -79,7 +96,7 @@ namespace SpreadsheetGUI
 
             // Update the text box to show the correct contents.
             HandleNewCellSelected();
-            
+
         }
 
         private void toCoordinates(string cellName, out int row, out int col)
@@ -88,7 +105,7 @@ namespace SpreadsheetGUI
             row = Convert.ToInt32(rowNumber) - 1;
             char column = cellName[0];
             col = Convert.ToInt32(column) - 'A';
-            
+
         }
 
         private string toCellName(int row, int col)
@@ -101,56 +118,29 @@ namespace SpreadsheetGUI
             window.OpenNew();
         }
 
-        private void HandleSaveEvent(string obj)       //I think the input is filename???? 
+        private void HandleSaveEvent(string filename)
         {
-            string filename = obj;
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            saveFileDialog1.Title = "Save a Spreadsheet file";
-            saveFileDialog1.FileName = filename + ".ss";
-            saveFileDialog1.Filter = "Spreadsheet Files (*.ss)|*.ss|All Files (*.*)|*.*";
-            saveFileDialog1.FilterIndex = 2;
-            saveFileDialog1.RestoreDirectory = true;
-            
-            if (saveFileDialog1.ShowDialog() == DialogResult.OK)
+            using (StreamWriter sw = new StreamWriter(filename))
             {
-                using (StreamWriter sw = new StreamWriter(saveFileDialog1.FileName))
-                {
-                    spreadsheet.Save(sw);
-                }
+                spreadsheet.Save(sw);
             }
+
         }
 
         private void HandleCloseEvent()
         {
             if (spreadsheet.Changed)
             {
-                
-                return;
+
             }
             window.DoClose();
         }
 
 
 
-        private void HandleOpenEvent(string obj)
+        private void HandleOpenEvent(string filename)
         {
-            string filename = obj;
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Title = "Open a Spreadsheet file";
-            openFileDialog1.InitialDirectory = "Spreadsheet Files (*.ss)|*.ss|All Files (*.*)|*.*";
-            openFileDialog1.FilterIndex = 1;
-            openFileDialog1.RestoreDirectory = true;
-            window.OpenNew();
-
-            try
-            {
-                Regex r = new Regex("^[a-zA-Z][1-9][0-9]?$");
-                TextReader t = File.OpenText(filename);
-                spreadsheet = new Spreadsheet(t, r);
-            }catch (Exception e)
-            {
-                MessageBox.Show("Unable to open file" + e);
-            }
+            window.OpenNew(filename);
         }
     }
 }

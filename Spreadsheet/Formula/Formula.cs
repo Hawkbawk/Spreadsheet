@@ -241,7 +241,6 @@ namespace Formulas
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("=");
             foreach (Token t in storedFormula)
             {
                 sb.Append(t.Text);
