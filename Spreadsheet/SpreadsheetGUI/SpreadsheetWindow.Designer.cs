@@ -1,11 +1,13 @@
 ﻿namespace SpreadsheetGUI
 {
-    partial class SpreadsheetWindow
+    partial class spreadsheetWindow
     {
         /// <summary>
         /// Required designer variable.
         /// </summary>
         private System.ComponentModel.IContainer components = null;
+
+        private CloseDialog cd;
 
         /// <summary>
         /// Clean up any resources being used.
@@ -39,9 +41,9 @@
             this.currentCell = new System.Windows.Forms.Label();
             this.textBoxOne = new System.Windows.Forms.TextBox();
             this.spreadsheetPanel_Panel = new System.Windows.Forms.Panel();
+            this.spreadsheetPanelOne = new SSGui.SpreadsheetPanel();
             this.openSpreadsheetDialog = new System.Windows.Forms.OpenFileDialog();
             this.saveSpreadsheetDialog = new System.Windows.Forms.SaveFileDialog();
-            this.spreadsheetPanelOne = new SSGui.SpreadsheetPanel();
             this.menuStrip.SuspendLayout();
             this.topPanel.SuspendLayout();
             this.spreadsheetPanel_Panel.SuspendLayout();
@@ -160,10 +162,6 @@
             this.spreadsheetPanel_Panel.TabIndex = 5;
             this.spreadsheetPanel_Panel.MouseEnter += new System.EventHandler(this.New_Clicked);
             // 
-            // openSpreadsheetDialog
-            // 
-            this.openSpreadsheetDialog.FileName = "openFileDialog1";
-            // 
             // spreadsheetPanelOne
             // 
             this.spreadsheetPanelOne.AutoScroll = true;
@@ -180,7 +178,11 @@
             this.spreadsheetPanelOne.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SpreadsheetPanel_KeyDown);
             this.spreadsheetPanelOne.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpreadsheetPanel_KeyPressed);
             // 
-            // SpreadsheetWindow
+            // openSpreadsheetDialog
+            // 
+            this.openSpreadsheetDialog.FileName = "openFileDialog1";
+            // 
+            // spreadsheetWindow
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -190,8 +192,9 @@
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.Name = "SpreadsheetWindow";
+            this.Name = "spreadsheetWindow";
             this.Text = "Spreadsheet";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SpreadsheetForm_Closing);
             this.menuStrip.ResumeLayout(false);
             this.menuStrip.PerformLayout();
             this.topPanel.ResumeLayout(false);

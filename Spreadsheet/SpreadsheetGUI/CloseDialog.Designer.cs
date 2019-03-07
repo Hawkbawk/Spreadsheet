@@ -85,8 +85,13 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.button2);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "CloseDialog";
+            this.ShowInTaskbar = false;
             this.Text = "CloseDialog";
+            this.TopMost = true;
+            this.TransparencyKey = System.Drawing.Color.White;
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

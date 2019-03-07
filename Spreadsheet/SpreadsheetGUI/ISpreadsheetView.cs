@@ -1,30 +1,36 @@
 ﻿using SSGui;
 using System;
 using System.IO;
+using System.Windows.Forms;
 
 namespace SpreadsheetGUI
 {
     public interface ISpreadsheetView
     {
-        event Action NewEvent;
-        event Action<string> SaveEvent;
-        event Action<string> OpenEvent;
-        event Action CloseEvent;
         event Action ChangeContents;
+
+        event Action CloseEvent;
+
         event Action NewCellSelected;
 
-        string GetDesiredContents();
-        void GetValue(int row, int col, out string contents);
-        void SetValue(int row, int col, string content);
-        void GetSelection(out int row, out int col);
-        void SetSelection(int row, int col);
-        void SelectedNewCell(string contents);
+        event Action NewEvent;
 
-        void CloseWithoutSave();
+        event Action<string> OpenEvent;
+
+        event Action<string> SaveEvent;
+
+        void DoClose();
+
+        string GetDesiredContents();
+
+        void GetSelection(out int col, out int row);
         void OpenNew();
 
         void OpenNew(string filename);
-        void DoClose();
 
+        void HandleSelectedNewCell(string contents);
+
+        void SetValue(int col, int row, string content);
+        void BeginCloseWithoutSave();
     }
 }
