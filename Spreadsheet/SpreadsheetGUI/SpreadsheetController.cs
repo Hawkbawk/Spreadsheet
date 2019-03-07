@@ -137,10 +137,10 @@ namespace SpreadsheetGUI
             object contents = spreadsheet.GetCellContents(cellName);
             if (contents is Formula)
             {
-                window.HandleSelectedNewCell("=" + contents.ToString());
+                window.SelectedNewCell("=" + contents.ToString());
                 return;
             }
-            window.HandleSelectedNewCell(contents.ToString());
+            window.SelectedNewCell(contents.ToString());
         }
 
         /// <summary>
