@@ -136,8 +136,8 @@ namespace SpreadsheetGUITest
         public void GetSelection(out int col, out int row)
         {
             CalledGetSelection = true;
-            col = 0;
-            row = 0;
+            col = selectedColumn;
+            row = selectedRow;
         }
 
         public void OpenNew()
