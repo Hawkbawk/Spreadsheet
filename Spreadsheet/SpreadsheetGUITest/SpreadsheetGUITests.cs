@@ -116,13 +116,22 @@ namespace SpreadsheetGUITest
             stub.selectedRow = 1;
             stub.selectedColumn = 1;
             stub.cellContents = "=A1";
-            stub.FireNewCellSelected();
+            stub.FireChangeContents();
             Assert.IsTrue(stub.CalledSelectedNewCell);
             Assert.IsTrue(stub.CalledGetDesiredContents);
             string filename = "TestSave.ss";
             stub.FireSaveEvent(filename);
             stub.FireOpenEvent(filename);
             Assert.IsTrue(stub.CalledOpenNew);
+        }
+
+        [TestMethod]
+        public void TestControllerConstructor()
+        {
+            ControllerTester stub = new ControllerTester();
+            Controller controller = new Controller(stub, "TestSave.ss");
+            Assert.IsTrue(stub.CalledSetValue);
+
         }
 
     }
