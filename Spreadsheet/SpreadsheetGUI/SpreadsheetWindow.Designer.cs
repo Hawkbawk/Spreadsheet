@@ -51,6 +51,7 @@
             // 
             // menuStrip
             // 
+            this.menuStrip.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.menuStrip.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fileMenuItem,
@@ -68,41 +69,53 @@
             this.file_SaveMenuItem,
             this.file_OpenMenuItem,
             this.file_CloseMenuItem});
+            this.fileMenuItem.ForeColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.fileMenuItem.Name = "fileMenuItem";
             this.fileMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileMenuItem.Text = "File";
             // 
             // file_NewMenuItem
             // 
+            this.file_NewMenuItem.BackColor = System.Drawing.SystemColors.ButtonShadow;
+            this.file_NewMenuItem.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.file_NewMenuItem.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.file_NewMenuItem.Name = "file_NewMenuItem";
-            this.file_NewMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.file_NewMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
+            this.file_NewMenuItem.Size = new System.Drawing.Size(180, 22);
             this.file_NewMenuItem.Text = "New";
             this.file_NewMenuItem.Click += new System.EventHandler(this.New_Clicked);
             // 
             // file_SaveMenuItem
             // 
+            this.file_SaveMenuItem.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.file_SaveMenuItem.Name = "file_SaveMenuItem";
-            this.file_SaveMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.file_SaveMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.S)));
+            this.file_SaveMenuItem.Size = new System.Drawing.Size(180, 22);
             this.file_SaveMenuItem.Text = "Save";
             this.file_SaveMenuItem.Click += new System.EventHandler(this.Save_Clicked);
             // 
             // file_OpenMenuItem
             // 
+            this.file_OpenMenuItem.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.file_OpenMenuItem.Name = "file_OpenMenuItem";
-            this.file_OpenMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.file_OpenMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
+            this.file_OpenMenuItem.Size = new System.Drawing.Size(180, 22);
             this.file_OpenMenuItem.Text = "Open";
             this.file_OpenMenuItem.Click += new System.EventHandler(this.Open_Click);
             // 
             // file_CloseMenuItem
             // 
+            this.file_CloseMenuItem.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.file_CloseMenuItem.Name = "file_CloseMenuItem";
-            this.file_CloseMenuItem.Size = new System.Drawing.Size(103, 22);
+            this.file_CloseMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
+            this.file_CloseMenuItem.Size = new System.Drawing.Size(180, 22);
             this.file_CloseMenuItem.Text = "Close";
             this.file_CloseMenuItem.Click += new System.EventHandler(this.Close_Clicked);
             // 
             // helpMenuItem
             // 
             this.helpMenuItem.Name = "helpMenuItem";
+            this.helpMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.H)));
             this.helpMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpMenuItem.Text = "Help";
             this.helpMenuItem.Click += new System.EventHandler(this.Help_Clicked);
@@ -111,6 +124,7 @@
             // 
             this.topPanel.AutoSize = true;
             this.topPanel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.topPanel.BackColor = System.Drawing.SystemColors.ButtonShadow;
             this.topPanel.Controls.Add(this.currentCell);
             this.topPanel.Controls.Add(this.textBoxOne);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
@@ -125,8 +139,8 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.currentCell.AutoSize = true;
             this.currentCell.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.currentCell.Location = new System.Drawing.Point(14, 14);
-            this.currentCell.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
+            this.currentCell.Location = new System.Drawing.Point(11, 13);
+            this.currentCell.Margin = new System.Windows.Forms.Padding(3);
             this.currentCell.Name = "currentCell";
             this.currentCell.Size = new System.Drawing.Size(142, 17);
             this.currentCell.TabIndex = 3;
@@ -139,6 +153,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.textBoxOne.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.textBoxOne.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.RecentlyUsedList;
+            this.textBoxOne.BackColor = System.Drawing.SystemColors.ButtonFace;
             this.textBoxOne.Location = new System.Drawing.Point(162, 11);
             this.textBoxOne.Name = "textBoxOne";
             this.textBoxOne.Size = new System.Drawing.Size(311, 20);
@@ -153,7 +168,7 @@
             this.spreadsheetPanel_Panel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.spreadsheetPanel_Panel.Controls.Add(this.spreadsheetPanelOne);
             this.spreadsheetPanel_Panel.Location = new System.Drawing.Point(0, 67);
-            this.spreadsheetPanel_Panel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.spreadsheetPanel_Panel.Margin = new System.Windows.Forms.Padding(2);
             this.spreadsheetPanel_Panel.Name = "spreadsheetPanel_Panel";
             this.spreadsheetPanel_Panel.Size = new System.Drawing.Size(954, 394);
             this.spreadsheetPanel_Panel.TabIndex = 5;
@@ -168,7 +183,7 @@
             this.spreadsheetPanelOne.Dock = System.Windows.Forms.DockStyle.Fill;
             this.spreadsheetPanelOne.ForeColor = System.Drawing.SystemColors.Control;
             this.spreadsheetPanelOne.Location = new System.Drawing.Point(0, 0);
-            this.spreadsheetPanelOne.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.spreadsheetPanelOne.Margin = new System.Windows.Forms.Padding(4);
             this.spreadsheetPanelOne.Name = "spreadsheetPanelOne";
             this.spreadsheetPanelOne.Size = new System.Drawing.Size(954, 394);
             this.spreadsheetPanelOne.TabIndex = 0;
@@ -184,6 +199,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.SystemColors.AppWorkspace;
             this.ClientSize = new System.Drawing.Size(954, 462);
             this.Controls.Add(this.spreadsheetPanel_Panel);
             this.Controls.Add(this.topPanel);
