@@ -62,6 +62,7 @@ namespace SpreadsheetGUI
                 toCoordinates(cell, out col, out row);
                 window.SetValue(col, row, spreadsheet.GetCellValue(cell).ToString());
             }
+            window.SetTitle(filename);
             HandleNewCellSelected();
         }
 
@@ -172,6 +173,7 @@ namespace SpreadsheetGUI
             using (StreamWriter sw = new StreamWriter(filename))
             {
                 spreadsheet.Save(sw);
+                window.SetTitle(filename);
             }
         }
 

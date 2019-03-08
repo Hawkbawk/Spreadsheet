@@ -8,7 +8,7 @@
         private System.ComponentModel.IContainer components = null;
 
         private CloseDialog cd;
-
+        private SendHelpForm helpForm;
         /// <summary>
         /// Clean up any resources being used.
         /// </summary>
@@ -57,8 +57,7 @@
             this.helpMenuItem});
             this.menuStrip.Location = new System.Drawing.Point(0, 0);
             this.menuStrip.Name = "menuStrip";
-            this.menuStrip.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip.Size = new System.Drawing.Size(1272, 28);
+            this.menuStrip.Size = new System.Drawing.Size(954, 24);
             this.menuStrip.TabIndex = 1;
             this.menuStrip.Text = "menuStrip1";
             // 
@@ -70,41 +69,41 @@
             this.file_OpenMenuItem,
             this.file_CloseMenuItem});
             this.fileMenuItem.Name = "fileMenuItem";
-            this.fileMenuItem.Size = new System.Drawing.Size(44, 24);
+            this.fileMenuItem.Size = new System.Drawing.Size(37, 20);
             this.fileMenuItem.Text = "File";
             // 
             // file_NewMenuItem
             // 
             this.file_NewMenuItem.Name = "file_NewMenuItem";
-            this.file_NewMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.file_NewMenuItem.Size = new System.Drawing.Size(103, 22);
             this.file_NewMenuItem.Text = "New";
             this.file_NewMenuItem.Click += new System.EventHandler(this.New_Clicked);
             // 
             // file_SaveMenuItem
             // 
             this.file_SaveMenuItem.Name = "file_SaveMenuItem";
-            this.file_SaveMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.file_SaveMenuItem.Size = new System.Drawing.Size(103, 22);
             this.file_SaveMenuItem.Text = "Save";
             this.file_SaveMenuItem.Click += new System.EventHandler(this.Save_Clicked);
             // 
             // file_OpenMenuItem
             // 
             this.file_OpenMenuItem.Name = "file_OpenMenuItem";
-            this.file_OpenMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.file_OpenMenuItem.Size = new System.Drawing.Size(103, 22);
             this.file_OpenMenuItem.Text = "Open";
             this.file_OpenMenuItem.Click += new System.EventHandler(this.Open_Click);
             // 
             // file_CloseMenuItem
             // 
             this.file_CloseMenuItem.Name = "file_CloseMenuItem";
-            this.file_CloseMenuItem.Size = new System.Drawing.Size(216, 26);
+            this.file_CloseMenuItem.Size = new System.Drawing.Size(103, 22);
             this.file_CloseMenuItem.Text = "Close";
             this.file_CloseMenuItem.Click += new System.EventHandler(this.Close_Clicked);
             // 
             // helpMenuItem
             // 
             this.helpMenuItem.Name = "helpMenuItem";
-            this.helpMenuItem.Size = new System.Drawing.Size(53, 24);
+            this.helpMenuItem.Size = new System.Drawing.Size(44, 20);
             this.helpMenuItem.Text = "Help";
             this.helpMenuItem.Click += new System.EventHandler(this.Help_Clicked);
             // 
@@ -115,10 +114,9 @@
             this.topPanel.Controls.Add(this.currentCell);
             this.topPanel.Controls.Add(this.textBoxOne);
             this.topPanel.Dock = System.Windows.Forms.DockStyle.Top;
-            this.topPanel.Location = new System.Drawing.Point(0, 28);
-            this.topPanel.Margin = new System.Windows.Forms.Padding(4);
+            this.topPanel.Location = new System.Drawing.Point(0, 24);
             this.topPanel.Name = "topPanel";
-            this.topPanel.Size = new System.Drawing.Size(1272, 540);
+            this.topPanel.Size = new System.Drawing.Size(954, 439);
             this.topPanel.TabIndex = 4;
             // 
             // currentCell
@@ -127,10 +125,10 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.currentCell.AutoSize = true;
             this.currentCell.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.currentCell.Location = new System.Drawing.Point(16, 15);
-            this.currentCell.Margin = new System.Windows.Forms.Padding(4);
+            this.currentCell.Location = new System.Drawing.Point(14, 14);
+            this.currentCell.Margin = new System.Windows.Forms.Padding(3, 3, 3, 3);
             this.currentCell.Name = "currentCell";
-            this.currentCell.Size = new System.Drawing.Size(171, 20);
+            this.currentCell.Size = new System.Drawing.Size(142, 17);
             this.currentCell.TabIndex = 3;
             this.currentCell.Text = "Current Cell Contents";
             this.currentCell.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -141,10 +139,9 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.textBoxOne.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.textBoxOne.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.RecentlyUsedList;
-            this.textBoxOne.Location = new System.Drawing.Point(216, 14);
-            this.textBoxOne.Margin = new System.Windows.Forms.Padding(4);
+            this.textBoxOne.Location = new System.Drawing.Point(162, 11);
             this.textBoxOne.Name = "textBoxOne";
-            this.textBoxOne.Size = new System.Drawing.Size(413, 22);
+            this.textBoxOne.Size = new System.Drawing.Size(311, 20);
             this.textBoxOne.TabIndex = 2;
             this.textBoxOne.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TextBox_KeyDown);
             // 
@@ -155,10 +152,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.spreadsheetPanel_Panel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.spreadsheetPanel_Panel.Controls.Add(this.spreadsheetPanelOne);
-            this.spreadsheetPanel_Panel.Location = new System.Drawing.Point(0, 82);
-            this.spreadsheetPanel_Panel.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.spreadsheetPanel_Panel.Location = new System.Drawing.Point(0, 67);
+            this.spreadsheetPanel_Panel.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
             this.spreadsheetPanel_Panel.Name = "spreadsheetPanel_Panel";
-            this.spreadsheetPanel_Panel.Size = new System.Drawing.Size(1272, 485);
+            this.spreadsheetPanel_Panel.Size = new System.Drawing.Size(954, 394);
             this.spreadsheetPanel_Panel.TabIndex = 5;
             this.spreadsheetPanel_Panel.MouseEnter += new System.EventHandler(this.New_Clicked);
             // 
@@ -171,10 +168,11 @@
             this.spreadsheetPanelOne.Dock = System.Windows.Forms.DockStyle.Fill;
             this.spreadsheetPanelOne.ForeColor = System.Drawing.SystemColors.Control;
             this.spreadsheetPanelOne.Location = new System.Drawing.Point(0, 0);
-            this.spreadsheetPanelOne.Margin = new System.Windows.Forms.Padding(5);
+            this.spreadsheetPanelOne.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.spreadsheetPanelOne.Name = "spreadsheetPanelOne";
-            this.spreadsheetPanelOne.Size = new System.Drawing.Size(1272, 485);
+            this.spreadsheetPanelOne.Size = new System.Drawing.Size(954, 394);
             this.spreadsheetPanelOne.TabIndex = 0;
+            this.spreadsheetPanelOne.Load += new System.EventHandler(this.spreadsheetPanelOne_Load);
             this.spreadsheetPanelOne.KeyDown += new System.Windows.Forms.KeyEventHandler(this.SpreadsheetPanel_KeyDown);
             this.spreadsheetPanelOne.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SpreadsheetPanel_KeyPressed);
             // 
@@ -184,14 +182,13 @@
             // 
             // spreadsheetWindow
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1272, 569);
+            this.ClientSize = new System.Drawing.Size(954, 462);
             this.Controls.Add(this.spreadsheetPanel_Panel);
             this.Controls.Add(this.topPanel);
             this.Controls.Add(this.menuStrip);
             this.MainMenuStrip = this.menuStrip;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "spreadsheetWindow";
             this.Text = "Spreadsheet";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SpreadsheetForm_Closing);

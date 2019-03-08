@@ -35,5 +35,7 @@ namespace SpreadsheetGUI
         void SelectedNewCell(string contents);
 
         void SetValue(int col, int row, string content);
+
+        void SetTitle(string title);
     }
 }

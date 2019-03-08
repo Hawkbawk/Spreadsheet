@@ -54,6 +54,12 @@
     <Compile Include="CloseDialog.Designer.cs">
       <DependentUpon>CloseDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="SendHelpForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SendHelpForm.Designer.cs">
+      <DependentUpon>SendHelpForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="SpreadsheetWindowContext.cs" />
     <Compile Include="ISpreadsheetView.cs" />
     <Compile Include="Controller.cs" />
@@ -78,6 +84,9 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="SendHelpForm.resx">
+      <DependentUpon>SendHelpForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SpreadsheetWindow.resx">
       <DependentUpon>SpreadsheetWindow.cs</DependentUpon>
     </EmbeddedResource>

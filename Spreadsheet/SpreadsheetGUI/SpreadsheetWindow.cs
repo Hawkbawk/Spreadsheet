@@ -7,16 +7,24 @@ namespace SpreadsheetGUI
 {
     public partial class spreadsheetWindow : Form, ISpreadsheetView
     {
-        private string helpMessage = "Hey there! So you want to know how to use this spreadsheet program? Well, it's fairly" +
-            " similar to Excel, with a few differences. First, if you want to change the contents of a cell, simply click on " +
-            "the cell and enter in your desired cell contents in the Cell Contexts text box, then press enter. \nYou can use formulas," +
-            " just like Excel! Your formulas can contain links to the values in other cells, by using a format such as \"= A4 + A5\". You" +
-            " can also just put in any numbers you please, or text. If you want to open a new spreadsheet window, just hit File and then " +
-            "New and a new window will open up. If you want to save a spreadsheet, just hit File and then Save. A File Explorer box will then" +
-            " open up and you can then decide where to save your file. \nIf you want to open up a previously saved spreadsheet, simply hit File" +
-            " and then Open. A File Explorer box will then open up and then you can navigate to the desired file. This program works with only with .ss files" +
-            ". If you try and open another file, an error message will popup, telling you to try again. \nIf you want to close your current spreadsheet, " +
-            "simply hit the \"X\" button in the top right corner, or select File and then Close, and your current spreadsheet will close.";
+        private string helpMessage = "Hey there! So you want to know how to " +
+            "use this spreadsheet program? Well, it's fairly" +
+            " similar to Excel, with a few differences. \n\nFirst, if you want " +
+            "to change the contents of a cell, simply click on " +
+            "the cell and start typing, then press enter when you're done. " +
+            "\nYou can use formulas, just like Excel, with an equals sign " +
+            "indicating a formula. Your formulas can contain links to the " +
+            "values in other cells, by using a format such as \"= A4 + A5\". " +
+            "You can also just put in any numbers you please, or text. " +
+            "\n\nIf you want to open a new spreadsheet window, just hit File and then " +
+            "New and a new window will open up. \nIf you want to save a spreadsheet," +
+            " just hit File and then Save. A File Explorer box will then" +
+            " open up and you can then decide where to save your file. \nIf you " +
+            "want to open up a previously saved spreadsheet, simply hit File" +
+            " and then Open. A File Explorer box will then open up and then you can " +
+            "navigate to the desired file. \nIf you want to close your current spreadsheet, " +
+            "simply hit the \"X\" button in the top right corner, or select File and then Close, " +
+            "and your current spreadsheet will close.";
 
         private FormClosingEventArgs WindowClosing;
 
@@ -185,7 +193,8 @@ namespace SpreadsheetGUI
         /// <param name="e">The arguments associated with this event</param>
         private void Help_Clicked(object sender, EventArgs e)
         {
-            MessageBox.Show(helpMessage);
+            helpForm = new SendHelpForm();
+            helpForm.ShowDialog();
         }
 
         /// <summary>
@@ -218,7 +227,7 @@ namespace SpreadsheetGUI
                 {
                     try
                     {
-                    OpenEvent(Path.GetFullPath(openSpreadsheetDialog.FileName));
+                        OpenEvent(Path.GetFullPath(openSpreadsheetDialog.FileName));
 
                     }
                     catch (Exception)
@@ -237,7 +246,8 @@ namespace SpreadsheetGUI
         /// <param name="e">The event arguments associated with this event</param>
         private void Save_Clicked(object sender, EventArgs e)
         {
-            saveSpreadsheetDialog.Filter = "Spreadsheet Files (*.ss)|*.ss";
+            saveSpreadsheetDialog.Filter = "Spreadsheet Files (*.ss)|*.ss| All Files | *.*";
+            saveSpreadsheetDialog.AddExtension = true;
             DialogResult result = saveSpreadsheetDialog.ShowDialog();
             if (result == DialogResult.OK || result == DialogResult.Yes)
             {
@@ -379,6 +389,17 @@ namespace SpreadsheetGUI
                 e.SuppressKeyPress = true;
                 ActiveControl = spreadsheetPanelOne;
             }
+        }
+
+        private void spreadsheetPanelOne_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        public void SetTitle(string filename)
+        {
+            string title = Path.GetFileNameWithoutExtension(filename);
+            this.Text = title;
         }
     }
 }
