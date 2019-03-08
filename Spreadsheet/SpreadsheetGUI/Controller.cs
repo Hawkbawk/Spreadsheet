@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace SpreadsheetGUI
 {
-    public class SpreadsheetController
+    public class Controller
     {
         /// <summary>
         /// The model part of Model, View, and Controller. Contains public methods that allow for the
@@ -27,7 +27,7 @@ namespace SpreadsheetGUI
         /// window and has no data stored in the model.
         /// </summary>
         /// <param name="_window">A GUI that the controller can interact with</param>
-        public SpreadsheetController(ISpreadsheetView _window)
+        public Controller(ISpreadsheetView _window)
         {
             window = _window;
 
@@ -49,7 +49,7 @@ namespace SpreadsheetGUI
         /// </summary>
         /// <param name="_window">The GUI that the controller can interact with</param>
         /// <param name="filename">The name of the file containing the data to be read</param>
-        public SpreadsheetController(ISpreadsheetView _window, string filename) : this(_window)
+        public Controller(ISpreadsheetView _window, string filename) : this(_window)
         {
             int col, row;
             Regex r = new Regex(@"^[a-zA-Z][1-9][0-9]?$");
@@ -85,11 +85,11 @@ namespace SpreadsheetGUI
                 // Show the appropriate error message if the passed in contents aren't allowed.
                 if (e is FormulaFormatException)
                 {
-                    MessageBox.Show("That's not a valid formula!");
+                    window.InvalidFormula();
                 }
                 else if (e is CircularException)
                 {
-                    MessageBox.Show("That formula creates a circular dependency!");
+                    window.CircularFormula();
                 }
                 return;
             }

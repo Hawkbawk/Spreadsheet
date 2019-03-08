@@ -55,6 +55,11 @@ namespace SpreadsheetGUI
             cd.ShowDialog();
         }
 
+        public void CircularFormula()
+        {
+            MessageBox.Show("That formula creates a circular dependency!");
+        }
+
         /// <summary>
         /// Closes the current spreadsheet window.
         /// </summary>
@@ -80,6 +85,11 @@ namespace SpreadsheetGUI
         public void GetSelection(out int col, out int row)
         {
             spreadsheetPanelOne.GetSelection(out col, out row);
+        }
+
+        public void InvalidFormula()
+        {
+            MessageBox.Show("That is an invalid Formula!");
         }
 
         /// <summary>

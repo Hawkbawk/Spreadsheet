@@ -3,7 +3,7 @@ using System;
 
 namespace SpreadsheetGUITest
 {
-    class SpreadsheetTestStub : ISpreadsheetView
+    class ControllerTester : ISpreadsheetView
     {
         public event Action ChangeContents;
         public event Action CloseEvent;
@@ -12,9 +12,24 @@ namespace SpreadsheetGUITest
         public event Action<string> OpenEvent;
         public event Action<string> SaveEvent;
 
-        public string filename { get; private set; }
-        public string cellContents { get; private set; }
+        public string filename
+        {
+            get; private set;
+        }
+        public string cellContents
+        {
+            get; set;
+        }
 
+        public int selectedColumn
+        {
+            get; set;
+        }
+
+        public int selectedRow
+        {
+            get; set;
+        }
 
         public void FireChangeContents()
         {
@@ -59,9 +74,15 @@ namespace SpreadsheetGUITest
                 SaveEvent(filename);
             }
         }
+        public bool CalledInvalidFormula
+        {
+            get; private set;
+        }
 
-
-
+        public bool CalledCircularFormula
+        {
+            get; private set;
+        }
         public bool CalledBeginCloseWithoutSave
         {
             get; private set;
@@ -115,8 +136,8 @@ namespace SpreadsheetGUITest
         public void GetSelection(out int col, out int row)
         {
             CalledGetSelection = true;
-            col = -1;
-            row = -1;
+            col = 0;
+            row = 0;
         }
 
         public void OpenNew()
@@ -140,6 +161,16 @@ namespace SpreadsheetGUITest
         {
             CalledSetValue = true;
             cellContents = content;
+        }
+
+        public void InvalidFormula()
+        {
+            CalledInvalidFormula = true;
+        }
+
+        public void CircularFormula()
+        {
+            CalledCircularFormula = true;
         }
     }
 

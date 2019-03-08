@@ -24,6 +24,10 @@ namespace SpreadsheetGUI
 
         void GetSelection(out int col, out int row);
 
+        void InvalidFormula();
+
+        void CircularFormula();
+
         void OpenNew();
 
         void OpenNew(string filename);

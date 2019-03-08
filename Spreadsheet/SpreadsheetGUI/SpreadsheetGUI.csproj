@@ -56,7 +56,7 @@
     </Compile>
     <Compile Include="SpreadsheetWindowContext.cs" />
     <Compile Include="ISpreadsheetView.cs" />
-    <Compile Include="SpreadsheetController.cs" />
+    <Compile Include="Controller.cs" />
     <Compile Include="SpreadsheetWindow.cs">
       <SubType>Form</SubType>
     </Compile>

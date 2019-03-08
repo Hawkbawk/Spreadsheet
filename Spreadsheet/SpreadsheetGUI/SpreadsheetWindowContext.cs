@@ -24,7 +24,7 @@ namespace SpreadsheetGUI
         public void RunNew()
         {
             spreadsheetWindow window = new spreadsheetWindow();
-            new SpreadsheetController(window);
+            new Controller(window);
 
             windowCount++;
 
@@ -37,7 +37,7 @@ namespace SpreadsheetGUI
         {
             spreadsheetWindow window = new spreadsheetWindow();
 
-            new SpreadsheetController(window, filename);
+            new Controller(window, filename);
 
             windowCount++;
 
