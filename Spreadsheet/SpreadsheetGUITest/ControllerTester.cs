@@ -112,6 +112,10 @@ namespace SpreadsheetGUITest
         {
             get; private set;
         }
+        public bool CalledSetTitle
+        {
+            get; private set;
+        }
 
         public void BeginCloseWithoutSave()
         {
@@ -171,6 +175,11 @@ namespace SpreadsheetGUITest
         public void CircularFormula()
         {
             CalledCircularFormula = true;
+        }
+
+        public void SetTitle(string title)
+        {
+            CalledSetTitle = true;
         }
     }
 
