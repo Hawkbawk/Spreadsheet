@@ -112,11 +112,12 @@ namespace DevelopmentTests
         public void StressTest2()
         {
             Spreadsheet s = new Spreadsheet();
-            for(int i = 1; i < 800; i++)
+            int i;
+            for(i = 1; i < 300; i++)
             {
                 s.SetContentsOfCell("a" + i, "=a" + (i + 1));
             }
-            s.SetContentsOfCell("a800", "1");
+            s.SetContentsOfCell("A" + i, "1");
             Assert.AreEqual(1.0, s.GetCellValue("a1"));
         }
 
@@ -263,7 +264,7 @@ namespace DevelopmentTests
         [ExpectedException(typeof(SpreadsheetReadException))]
         public void ReadInvalidXML()
         {
-            StreamReader name = new StreamReader("InvalidXML.xml");
+            StreamReader name = new StreamReader("InvalidXML.ss");
             Spreadsheet s = new Spreadsheet(name, new Regex(@"^.*$"));
         }
 

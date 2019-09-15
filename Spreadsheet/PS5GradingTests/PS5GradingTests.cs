@@ -416,7 +416,7 @@ namespace GradingTests
             Test39();
         }
 
-        [TestMethod, Timeout(3000)]
+        [TestMethod, Timeout(6000)]
         public void Test43()
         {
             AbstractSpreadsheet s = new Spreadsheet();
@@ -440,19 +440,19 @@ namespace GradingTests
             }
         }
 
-        [TestMethod, Timeout(3000)]
+        [TestMethod, Timeout(6000)]
         public void Test44()
         {
             Test43();
         }
 
-        [TestMethod, Timeout(3000)]
+        [TestMethod, Timeout(6000)]
         public void Test45()
         {
             Test43();
         }
 
-        [TestMethod, Timeout(3000)]
+        [TestMethod, Timeout(6000)]
         public void Test46()
         {
             Test43();
