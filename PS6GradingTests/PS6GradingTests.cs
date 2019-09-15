@@ -910,7 +910,7 @@ namespace PS6GradingTests
             LongTest();
         }
 
-        [TestMethod, Timeout(15000)]
+        [TestMethod]
         public void LongTestWithTimeout15()
         {
             LongTest();
@@ -919,7 +919,7 @@ namespace PS6GradingTests
         public void LongTest()
         {
             AbstractSpreadsheet s = new Spreadsheet();
-            s.SetContentsOfCell("SUM1", "= A1 + A2");
+            s.SetContentsOfCell("S1", "= A1 + A2");
             int i;
             int depth = 100;
             for (i = 1; i <= depth * 2; i += 2)
@@ -929,11 +929,11 @@ namespace PS6GradingTests
             }
             s.SetContentsOfCell("A" + i, "1");
             s.SetContentsOfCell("A" + (i + 1), "1");
-            Assert.AreEqual(Math.Pow(2, depth + 1), (double)s.GetCellValue("SUM1"), 1e20);
+            Assert.AreEqual(Math.Pow(2, depth + 1), (double)s.GetCellValue("S1"), 1e20);
             s.SetContentsOfCell("A" + i, "0");
-            Assert.AreEqual(Math.Pow(2, depth), (double)s.GetCellValue("SUM1"), 1e20);
+            Assert.AreEqual(Math.Pow(2, depth), (double)s.GetCellValue("S1"), 1e20);
             s.SetContentsOfCell("A" + (i + 1), "0");
-            Assert.AreEqual(0.0, (double)s.GetCellValue("SUM1"), 0.1);
+            Assert.AreEqual(0.0, (double)s.GetCellValue("S1"), 0.1);
         }
 
         // Regression tests from PS5GradingTests
